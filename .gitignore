@@ -1,0 +1,11 @@
+# Compilados e executáveis 
+*.o 
+*.out 
+*.exe 
+estacionamento 
+
+# Arquivos de sistema e editores 
+.DS_Store 
+Thumbs.db 
+.vscode/ 
+.idea/
