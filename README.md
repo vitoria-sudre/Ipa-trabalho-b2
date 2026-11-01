@@ -10,7 +10,7 @@ Modalidade: Dupla
 Integrante 1: [Vitória Sudré de Melo] — [vitoria-sudre]
 Responsável pelo menu, cadastro, validações e mapa de vagas.
 
-Integrante 2: [Nome] — [GitHub]
+Integrante 2: [Natasha Novaes dos Santos ] — [Natasha Novaes]
 Responsável pelo vetor dinâmico, realloc, movimentação, remoção e relatório.
 
 2. Descrição do projeto
