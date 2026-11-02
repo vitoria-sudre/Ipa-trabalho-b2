@@ -125,7 +125,4 @@ gcc -std=c11 -Wall -Wextra -pedantic src/main.c src/estacionamento.c -o estacion
 
 ## 9. Declaração Individual de Autoria e Uso de IA
 
-* **Declaração de Vitoria Sudre de Melo:** Declaro que atuei no desenvolvimento do cadastro de veículos, controle da matriz de vagas e validações alfanuméricas. Utilizei a ferramenta de IA generativa Gemini Notebook para auxiliar na revisão da lógica de tratamento de strings e formatação da documentação. Todo o código submetido foi revisado, testado e compreendido por mim.
-
-* **Declaração de Natasha Novaes dos Santos:** Declaro que atuei na implementação do vetor dinâmico de veículos, expansão segura com `realloc`, remoção sem lacunas e geração de relatórios. Utilizei a IA generativa Gemini Notebook para suporte na estruturação dos casos de teste e verificação do gerenciamento de memória com `free()`. Todo o código foi implementado e validado por mim.
 
