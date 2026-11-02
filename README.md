@@ -1,9 +1,9 @@
 # Sistema de Gestão de Estacionamento
 
-**Disciplina:** Lógica de Programação e Algoritmos (LPA) [4]  
-**Semestre:** 2026/2 [4]  
-**Linguagem:** C (Padrão ISO C11) [4]  
-**Modalidade:** Dupla [4]  
+**Disciplina:** Lógica de Programação e Algoritmos 
+**Semestre:** 2026/2  
+**Linguagem:** C (Padrão ISO C11) 
+**Modalidade:** Dupla  
 
 ---
 
