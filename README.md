@@ -10,12 +10,12 @@
 ## 1. Integrantes e Identificação
 
 **Integrante 1:** Vitoria Sudre de Melo  
-**GitHub:** [@vitoriasudre](https://github.com/vitoriasudre)
+**GitHub:** @vitoriasudre
 
 **Responsabilidades:** Estrutura de dados, menu principal, cadastro de veículos, validações alfanuméricas e matriz do mapa de vagas.
 
 **Integrante 2:** Natasha Novaes dos Santos  
-**GitHub:** [@natashanovaes](https://github.com/natashanovaes)
+**GitHub:** @natashanovaes
 
 **Responsabilidades:** Vetor dinâmico, realocação de memória (`realloc`), movimentação, remoção de registros e relatório de ocupação.
 
@@ -105,7 +105,7 @@ O sistema apresenta as seguintes opções:
 - **Remover veículo:** exclui o cadastro e libera a vaga.
 - **Listar veículos:** apresenta os veículos cadastrados.
 - **Exibir mapa:** mostra a situação das 20 vagas.
-- **Relatório de ocupação:** apresenta a quantidade de vagas ocupadas e livres, além das informações sobre as categorias dos veículos.
+- **Relatório de ocupação:** apresenta a quantidade de vagas ocupadas e livres e informações sobre as categorias dos veículos.
 
 ---
 
@@ -134,88 +134,4 @@ lpa-trabalho-b2/
 ### Principais funções
 
 - `inicializar_estacionamento()`: inicializa a matriz e o vetor dinâmico.
-- `liberar_estacionamento()`: libera a memória utilizada pelo vetor dinâmico.
-- `cadastrar_veiculo()`: realiza o cadastro de veículos.
-- `consultar_veiculo()`: consulta um veículo pelo identificador.
-- `atualizar_veiculo()`: atualiza os dados do veículo.
-- `mover_veiculo()`: altera a posição do veículo.
-- `remover_veiculo()`: remove um veículo cadastrado.
-- `listar_veiculos()`: apresenta os veículos cadastrados.
-- `exibir_mapa_vagas()`: apresenta o mapa do estacionamento.
-- `exibir_relatorio_ocupacao()`: apresenta o relatório de ocupação.
-
----
-
-## 6. Instruções de Compilação e Execução
-
-Para compilar o programa, é necessário ter o compilador GCC instalado.
-
-### Compilação (GCC C11)
-
-Execute o seguinte comando na pasta principal do projeto:
-
-```bash
-gcc -std=c11 -Wall -Wextra -pedantic src/main.c src/estacionamento.c -o estacionamento
-```
-
-### Execução no Linux ou macOS
-
-```bash
-./estacionamento
-```
-
-### Execução no Windows
-
-```bash
-estacionamento.exe
-```
-
----
-
-## 7. Casos de Teste Documentados
-
-Os testes têm como objetivo verificar as funcionalidades, as validações e as regras de negócio do sistema.
-
-| Teste | Entrada ou operação | Resultado esperado | Resultado observado | Situação |
-|---|---|---|---|---|
-| T01 | Consultar o mapa sem veículos cadastrados | Apresentar 20 vagas livres | Preencher após executar | Pendente |
-| T02 | Cadastrar veículo com dados válidos | Cadastro realizado com sucesso | Preencher após executar | Pendente |
-| T03 | Cadastrar identificador já existente | Cadastro rejeitado | Preencher após executar | Pendente |
-| T04 | Tentar cadastrar veículo em vaga ocupada | Operação recusada | Preencher após executar | Pendente |
-| T05 | Cadastrar o terceiro veículo | Vetor expandido de 2 para 4 posições | Preencher após executar | Pendente |
-| T06 | Atualizar descrição ou categoria | Dados atualizados | Preencher após executar | Pendente |
-| T07 | Mover veículo para uma vaga livre | Nova posição registrada | Preencher após executar | Pendente |
-| T08 | Remover veículo cadastrado | Registro removido e vaga liberada | Preencher após executar | Pendente |
-| T09 | Tentar cadastrar o 21º veículo | Cadastro recusado por lotação máxima | Preencher após executar | Pendente |
-| T10 | Encerrar o programa | Memória do vetor liberada com `free()` | Preencher após executar | Pendente |
-
-**Observação:** os resultados observados e a situação dos testes devem ser preenchidos depois que cada teste for executado. Um teste deve ser marcado como aprovado somente quando o resultado corresponder ao esperado.
-
----
-
-## 8. Colaboração no GitHub e Branches
-
-O desenvolvimento foi organizado por meio de branches para separar as funcionalidades implementadas por cada integrante.
-
-- **main:** branch principal do projeto.
-- **feature/cadastro-mapa:** desenvolvimento do cadastro, menu e mapa de vagas por Vitoria Sudre de Melo.
-- **feature/expansao-relatorio:** desenvolvimento do vetor dinâmico, movimentação, remoção e relatórios por Natasha Novaes dos Santos.
-
-As alterações desenvolvidas nas branches devem ser integradas à branch principal.
-
-Cada integrante deve possuir pelo menos quatro commits significativos, demonstrando sua participação no desenvolvimento do projeto.
-
----
-
-## 9. Declaração Individual de Autoria e Uso de IA
-
-### Declaração de Vitoria Sudre de Melo
-
-Declaro que participei do desenvolvimento do Sistema de Gestão de Estacionamento, atuando na estrutura de dados, no menu principal, no cadastro de veículos, nas validações e na matriz do mapa de vagas. Utilizamos o ChatGPT como ferramenta de inteligência artificial para obter uma base inicial e orientações para a estruturação do projeto. As sugestões foram analisadas, adaptadas e revisadas durante o desenvolvimento.
-
-### Declaração de Natasha Novaes dos Santos
-
-Declaro que participei do desenvolvimento do Sistema de Gestão de Estacionamento, atuando no vetor dinâmico, na realocação de memória com `realloc`, na movimentação, na remoção de veículos e nos relatórios de ocupação. Também utilizamos o ChatGPT como apoio para construir a base inicial do código, esclarecer dúvidas e auxiliar na organização das funcionalidades. O código foi revisado e estudado por nós durante a realização do trabalho.
-
----
-
+- `liberar_estacionamento()`: libera
