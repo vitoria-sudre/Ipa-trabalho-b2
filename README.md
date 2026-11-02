@@ -125,4 +125,10 @@ gcc -std=c11 -Wall -Wextra -pedantic src/main.c src/estacionamento.c -o estacion
 
 ## 9. Declaração Individual de Autoria e Uso de IA
 
+**Declaração de Vitoria Sudre de Melo:**
 
+Declaro que participei do desenvolvimento do Sistema de Gestão de Estacionamento, atuando na estrutura de dados, no menu principal, no cadastro de veículos, nas validações e na matriz do mapa de vagas. Utilizamos o ChatGPT como ferramenta de inteligência artificial para obter uma base inicial e orientações para a estruturação do projeto. As sugestões foram analisadas, adaptadas e revisadas durante o desenvolvimento. 
+
+**Declaração de Natasha Novaes dos Santos:**
+
+Declaro que participei do desenvolvimento do Sistema de Gestão de Estacionamento, atuando no vetor dinâmico, na realocação de memória com `realloc`, na movimentação, na remoção de veículos e nos relatórios de ocupação. Também utilizamos o ChatGPT como apoio para construir a base inicial do código, esclarecer dúvidas e auxiliar na organização das funcionalidades. O código foi revisado e estudado por nós durante a realização do trabalho.
