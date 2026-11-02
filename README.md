@@ -1,160 +1,66 @@
-Sistema de Gestão de Estacionamento
+# Sistema de Gestão de Estacionamento
 
-Disciplina: Lógica de Programação e Algoritmos (LPA)
-Semestre: 2026/2
-Linguagem: C (C11)
-Modalidade: Dupla
+**Disciplina:** Lógica de Programação e Algoritmos (LPA) [4]  
+**Semestre:** 2026/2 [4]  
+**Linguagem:** C (Padrão ISO C11) [4]  
+**Modalidade:** Dupla [4]  
 
-1. Integrantes
+---
 
-Integrante 1: [Vitória Sudré de Melo] — [vitoria-sudre]
-Responsável pelo menu, cadastro, validações e mapa de vagas.
+## 1. Identificação e Integrantes [3]
 
-Integrante 2: [Natasha Novaes dos Santos ] — [Natasha Novaes]
-Responsável pelo vetor dinâmico, realloc, movimentação, remoção e relatório.
+* **Integrante 1:** Vitória Sudré de Melo - Perfil GitHub: @vitoriasudre  
+  *Responsabilidade:* Estrutura de dados inicial, menu principal, cadastro de veículos, validações alfanuméricas de identificador e matriz do mapa de vagas.
+* **Integrante 2:** Natasha Novaes dos Santos - Perfil GitHub: @natashanovaes  
+  *Responsabilidade:* Alocação e expansão dinâmica de memória (realloc), movimentação, remoção de registros sem lacunas e relatório de ocupação.
 
-2. Descrição do projeto
+---
 
-Sistema de terminal desenvolvido em C para gerenciar um estacionamento com 20 vagas, distribuídas em 4 fileiras e 5 colunas.
+## 2. Descrição do Cenário e Escopo [3]
 
-Os dados permanecem na memória durante a execução. O sistema mantém a consistência entre os veículos cadastrados e as vagas ocupadas.
+O **Sistema de Gestão de Estacionamento** é uma aplicação interativa de terminal desenvolvida em linguagem C (padrão C11) para controlar o fluxo e a ocupação de **20 vagas físicas de estacionamento** [5], arranjadas em uma matriz de **4 fileiras (F1 a F4) por 5 colunas (C1 a C5)** [5].
 
-3. Estruturas utilizadas
+### Premissas e Regras de Negócio:
+1. **Permanência em Memória:** Todos os registros de veículos e o estado das vagas permanecem em memória RAM durante a execução [5].
+2. **Critério de Consistência:** Em qualquer momento, o total de registros no vetor dinâmico de veículos é estritamente igual à quantidade de valores `1` na matriz de vagas e à contagem no relatório de ocupação [6].
+3. **Gerenciamento Dinâmico:** A coleção de veículos inicia com capacidade para 2 registros e é expandida dinamicamente (dobrando a capacidade via `realloc`) sempre que necessário [7].
+4. **Capacidade Física Máxima:** O sistema bloqueia novos cadastros ao atingir o limite físico de 20 vagas ocupadas [7].
 
-Matriz 4x5: representa as vagas. 0 = livre e 1 = ocupada.
+---
 
-Struct: armazena identificador, descrição, categoria, fileira e coluna.
+## 3. Estruturas de Dados Utilizadas [3]
 
-Vetor dinâmico: armazena os veículos, começa com capacidade 2 e dobra utilizando realloc quando necessário.
+```c
+/* Struct que representa o registro individual de um veículo */
+typedef struct {
+    char identificador[8]; /* 7 caracteres alfanuméricos + '\0' */
+    char descricao[9];    /* Descrição com até 60 caracteres */
+    int categoria;         /* 1 = Carro, 2 = Moto */
+    int fileira;           /* Posição física: 1 a 4 */
+    int coluna;            /* Posição física: 1 a 5 */
+} Veiculo;
 
-O limite máximo é de 20 veículos.
+/* Struct principal para controle do estacionamento */
+typedef struct {
+    int mapa[10][11];       /* Matriz 4x5: 0 = livre, 1 = ocupada */
+    Veiculo *veiculos;    /* Vetor dinâmico de veículos */
+    size_t quantidade;    /* Quantidade de veículos ativos */
+    size_t capacidade;    /* Capacidade alocada no vetor */
+} Estacionamento;
 
-4. Funcionalidades
+Funcionalidades e Menu
 
+=========================================
+   SISTEMA DE GESTÃO DE ESTACIONAMENTO   
+=========================================
 1 - Cadastrar veículo
-2 - Consultar veículo
+2 - Consultar veículo por identificador
 3 - Atualizar descrição ou categoria
-4 - Mover veículo
+4 - Mover veículo para outra vaga
 5 - Remover veículo
-6 - Listar veículos
+6 - Listar veículos cadastrados
 7 - Exibir mapa de vagas
-8 - Relatório de ocupação
+8 - Exibir relatório da ocupação
 0 - Encerrar
+=========================================
 
-5. Compilação e execução
-
-Compilar:
-
-gcc -std=c11 -Wall -Wextra -pedantic src/main.c src/estacionamento.c -o estacionamento
-
-Executar:
-
-./estacionamento
-
-6. Testes realizados
-
-Teste
-
-Operação
-
-Resultado observado
-
-Situação
-
-T01
-
-Estacionamento vazio
-
-20 vagas livres e 0% de ocupação
-
-Aprovado
-
-T02
-
-Cadastro válido
-
-Veículo cadastrado
-
-Aprovado
-
-T03
-
-ID duplicado
-
-Cadastro recusado
-
-Aprovado
-
-T04
-
-Vaga ocupada
-
-Cadastro recusado
-
-Aprovado
-
-T05
-
-Terceiro cadastro
-
-Vetor ampliado de 2 para 4
-
-Aprovado
-
-T06
-
-Atualização
-
-Descrição alterada
-
-Aprovado
-
-T07
-
-Movimentação
-
-Origem livre e destino ocupado
-
-Aprovado
-
-T08
-
-Remoção
-
-Registro removido e vaga liberada
-
-Aprovado
-
-T09
-
-Lotação máxima
-
-21º cadastro recusado
-
-Aprovado
-
-T10
-
-Encerramento
-
-Memória liberada com free()
-
-Aprovado
-
-7. Colaboração no GitHub
-
-main: branch principal.
-
-feature/cadastro-mapa: cadastro, menu e mapa.
-
-feature/expansao-relatorio: vetor dinâmico, movimentação, remoção e relatório.
-
-As funcionalidades foram desenvolvidas em branches próprias e integradas à branch principal.
-
-8. Declaração de autoria e uso de IA
-
-Integrante 1: Participou do cadastro, validação de identificadores e mapa de vagas. Utilizou o Gemini Notebook para auxiliar na revisão das strings e da documentação.
-
-Integrante 2: Participou do vetor dinâmico, realloc, movimentação, remoção e relatório de ocupação. [Informar se utilizou IA e para qual finalidade.]
-
-Referências externas: [Informar as fontes utilizadas ou declarar que não foram utilizadas.]
