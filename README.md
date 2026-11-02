@@ -64,3 +64,65 @@ Funcionalidades e Menu
 0 - Encerrar
 =========================================
 
+5. Modularização do Código
+O projeto está organizado na pasta src/ em três arquivos bem definidos:
+• src/estacionamento.h: Definições de constantes, structs e protótipos de funções.
+• src/estacionamento.c: Implementação da lógica das 8 operações do CRUD, validação de IDs e realloc.
+• src/main.c: Ponto de entrada da aplicação (main), menu interativo e tratamento de buffers.
+6. Instruções de Compilação e Execução
+Compilação (GCC no Padrão ISO C11):
+gcc -std=c11 -Wall -Wextra -pedantic src/main.c src/estacionamento.c -o estacionamento
+Execução no Terminal:
+./estacionamento
+
+7. Casos de Teste Documentados
+Teste Descrição da
+Operação Resultado Esperado Resultado Observado Situação
+T01 Estacionamento Vazio Mapa exibindo 20 vagas livres (.) e
+relatório zerado Exibido conforme esperado Aprovado
+T02 Cadastro Válido Cadastrar ABC1D23 (Carro) na vaga
+F1/C1 Registro salvo e vaga F1/C1 ocupada (X) Aprovado
+T03 Duplicidade
+Case-Insensitive
+Tentar cadastrar abc1d23 após
+ABC1D23 Cadastro rejeitado por ID duplicado Aprovado
+T04 Vaga Ocupada Cadastrar em vaga F1/C1 já contendo
+veículo
+Operação recusada com aviso de vaga
+ocupada Aprovado
+T05 Crescimento Dinâmico Inserir 3º veículo (LPA2026) no sistema Vetor expande capacidade de 2 para 4
+via realloc Aprovado
+T06 Atualização Alterar descrição de ABC1D23 para
+'Sedan Prata' Descrição atualizada sem alterar vaga Aprovado
+T07 Movimentação Mover ABC1D23 da vaga F1/C1 para
+F2/C3
+Vaga F1/C1 liberada (.) e F2/C3 ocupada
+(X) Aprovado
+T08 Remoção de Veículo Remover o veículo LPA2026 Vaga desocupada e vetor ajustado sem
+lacunas Aprovado
+T09 Lotação Máxima Preencher 20 vagas e tentar cadastrar o
+21º
+Operação recusada por limite de 20
+vagas
+Aprovado
+T10 Encerramento Selecionar a opção 0 no menu principal Recursos liberados via free() e sistema
+encerrado Aprovado
+
+8. Colaboração no GitHub e Branches
+SISTEMA DE GESTÃO DE ESTACIONAMENTO — README & CÓDIGO C11 Vitória Sudré & Natasha Novaes
+LPA 2026/2 — Roteiro Trabalho B2 | Repositório GitHub (Completo) Página 2 de 10
+• main: Branch principal e estável do projeto.
+• feature/cadastro-mapa: Branch utilizada por Vitória Sudré de Melo para criação do menu, mapa de vagas e funções de
+cadastro.
+• feature/expansao-relatorio: Branch utilizada por Natasha Novaes dos Santos para desenvolvimento do vetor dinâmico
+(realloc), movimentação, remoção e relatórios.
+
+9. Declarações Individuais de Autoria e Uso de IA
+• Declaração de Vitória Sudré de Melo: Declaro que atuei no desenvolvimento do cadastro de veículos, controle da matriz
+de vagas e validações alfanuméricas. Utilizei a ferramenta de IA generativa Gemini Notebook de forma transparente para
+auxílio na revisão da lógica de tratamento de strings e formatação da documentação. Todo o código submetido foi revisado,
+testado e compreendido por mim.
+• Declaração de Natasha Novaes dos Santos: Declaro que atuei na implementação do vetor dinâmico de veículos,
+expansão segura com realloc via ponteiro auxiliar, remoção sem lacunas e geração de relatórios. Utilizei a IA generativa
+Gemini Notebook para suporte na estruturação dos casos de teste e verificação de gerenciamento de memória com free().
+Todo o código foi implementado e validado por mim.
