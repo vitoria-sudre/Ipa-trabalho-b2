@@ -219,5 +219,3 @@ Declaro que participei do desenvolvimento do Sistema de Gestão de Estacionament
 
 ---
 
-**Trabalho do 2º Bimestre — Lógica de Programação e Algoritmos (LPA)**  
-**Semestre: 2026/2**
