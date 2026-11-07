@@ -1,321 +1,527 @@
+#include <ctype.h>
+#include <errno.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
+
 #include "estacionamento.h"
 
-int inicializar_estacionamento(Estacionamento *est) {
-    if (est == NULL) return 0;
+/* ===== Leitura segura de entrada ===== */
 
-    for (int f = 0; f < FILEIRAS; f++) {
-        for (int c = 0; c < COLUNAS; c++) {
-            est->mapa[f][c] = 0;
+StatusLeitura ler_linha(const char *prompt, char *buf, size_t tam)
+{
+    size_t n;
+    int longa = 0;
+    int ch;
+
+    if (prompt != NULL) {
+        fputs(prompt, stdout);
+        fflush(stdout);
+    }
+    if (fgets(buf, (int)tam, stdin) == NULL) {
+        buf[0] = '\0';
+        return LEITURA_EOF;
+    }
+
+    n = strlen(buf);
+    if (n > 0 && buf[n - 1] == '\n') {
+        buf[--n] = '\0';
+    } else if (n == tam - 1) {
+        /* buffer cheio sem '\n': ou a linha tem exatamente esse tamanho,
+           ou ainda sobrou texto no teclado, que precisa ser descartado. */
+        ch = getchar();
+        if (ch != '\n' && ch != EOF) {
+            longa = 1;
+            while ((ch = getchar()) != '\n' && ch != EOF) {
+                /* descarta o restante */
+            }
         }
     }
+    if (n > 0 && buf[n - 1] == '\r') {
+        buf[--n] = '\0';
+    }
 
-    est->veiculos = (Veiculo *) malloc(CAPACIDADE_INICIAL * sizeof(Veiculo));
-    if (est->veiculos == NULL) {
-        perror("Erro ao alocar memória inicial");
+    if (longa) {
+        return LEITURA_LONGA;
+    }
+    return (n == 0) ? LEITURA_VAZIA : LEITURA_OK;
+}
+
+StatusLeitura ler_inteiro(const char *prompt, int *valor)
+{
+    char buf[32];
+    char *fim;
+    long v;
+    StatusLeitura st;
+
+    *valor = 0;
+    st = ler_linha(prompt, buf, sizeof buf);
+    if (st == LEITURA_EOF || st == LEITURA_VAZIA) {
+        return st;
+    }
+    if (st == LEITURA_LONGA) {
+        return LEITURA_INVALIDA;
+    }
+
+    errno = 0;
+    v = strtol(buf, &fim, 10);
+    if (fim == buf || errno == ERANGE) {
+        return LEITURA_INVALIDA;
+    }
+    while (*fim != '\0' && isspace((unsigned char)*fim)) {
+        fim++;
+    }
+    if (*fim != '\0' || v < INT_MIN || v > INT_MAX) {
+        return LEITURA_INVALIDA;
+    }
+    *valor = (int)v;
+    return LEITURA_OK;
+}
+
+/* ===== Colecao dinamica ===== */
+
+/* Aloca o bloco inicial (capacidade 2). Retorna 1 se deu certo. */
+int colecao_iniciar(Colecao *c)
+{
+    Veiculo *p;
+
+    c->dados = NULL;
+    c->quantidade = 0;
+    c->capacidade = 0;
+
+    p = malloc(CAPACIDADE_INICIAL * sizeof *p);
+    if (p == NULL) {
         return 0;
     }
-
-    est->quantidade = 0;
-    est->capacidade = CAPACIDADE_INICIAL;
+    c->dados = p;
+    c->capacidade = CAPACIDADE_INICIAL;
     return 1;
 }
 
-void liberar_estacionamento(Estacionamento *est) {
-    if (est != NULL && est->veiculos != NULL) {
-        free(est->veiculos);
-        est->veiculos = NULL;
-        est->quantidade = 0;
-        est->capacidade = 0;
-    }
-}
+/* Dobra a capacidade. O resultado do realloc e guardado em um ponteiro
+   temporario: se falhar, c->dados continua valido e nada e perdido. */
+int colecao_ampliar(Colecao *c)
+{
+    int nova = (c->capacidade > 0) ? c->capacidade * 2 : CAPACIDADE_INICIAL;
+    Veiculo *tmp = realloc(c->dados, (size_t)nova * sizeof *tmp);
 
-int validar_identificador(const char *id) {
-    if (id == NULL || strlen(id) != TAM_ID) return 0;
-    for (int i = 0; i < TAM_ID; i++) {
-        if (!isalnum((unsigned char)id[i])) return 0;
+    if (tmp == NULL) {
+        return 0;
     }
+    c->dados = tmp;
+    c->capacidade = nova;
     return 1;
 }
 
-void normalizar_identificador(char *dest, const char *src) {
-    if (dest == NULL || src == NULL) return;
-    for (int i = 0; i < TAM_ID; i++) {
-        dest[i] = (char) toupper((unsigned char)src[i]);
-    }
-    dest[TAM_ID] = '\0';
+void colecao_liberar(Colecao *c)
+{
+    free(c->dados);
+    c->dados = NULL;
+    c->quantidade = 0;
+    c->capacidade = 0;
 }
 
-int buscar_veiculo_por_id(const Estacionamento *est, const char *id_norm) {
-    if (est == NULL || id_norm == NULL) return -1;
-    for (size_t i = 0; i < est->quantidade; i++) {
-        if (strcmp(est->veiculos[i].identificador, id_norm) == 0) {
-            return (int) i;
+/* Valida o identificador (7 caracteres, so A-Z e 0-9) e grava em saida a
+   versao em maiusculas. Retorna 1 se valido, 0 se invalido. */
+int normalizar_id(const char *entrada, char saida[TAM_ID + 1])
+{
+    size_t i;
+
+    if (strlen(entrada) != TAM_ID) {
+        return 0;
+    }
+    for (i = 0; i < TAM_ID; i++) {
+        char ch = entrada[i];
+
+        if (ch >= 'a' && ch <= 'z') {
+            ch = (char)(ch - 'a' + 'A');
+        }
+        if (!((ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9'))) {
+            return 0;
+        }
+        saida[i] = ch;
+    }
+    saida[TAM_ID] = '\0';
+    return 1;
+}
+
+/* Descricao: nao vazia (nem so espacos) e com no maximo 60 caracteres. */
+int descricao_valida(const char *descricao)
+{
+    size_t n = strlen(descricao);
+    size_t i;
+
+    if (n == 0 || n > MAX_DESC) {
+        return 0;
+    }
+    for (i = 0; i < n; i++) {
+        if (descricao[i] != ' ' && descricao[i] != '\t') {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int categoria_valida(int categoria)
+{
+    return categoria == CATEGORIA_CARRO || categoria == CATEGORIA_MOTO;
+}
+
+/* Procura pelo identificador JA normalizado. Retorna o indice ou -1. */
+int indice_por_id(const Colecao *c, const char *id_normalizado)
+{
+    int i;
+
+    for (i = 0; i < c->quantidade; i++) {
+        if (strcmp(c->dados[i].id, id_normalizado) == 0) {
+            return i;
         }
     }
     return -1;
 }
 
-int cadastrar_veiculo(Estacionamento *est, const char *id, const char *desc, int cat, int fileira, int coluna) {
-    if (est == NULL) return 0;
+/* Busca a partir do texto digitado (normaliza antes). NULL se nao achar. */
+Veiculo *colecao_buscar(const Colecao *c, const char *id_bruto)
+{
+    char id[TAM_ID + 1];
+    int indice;
 
-    if (est->quantidade >= TOTAL_VAGAS) {
-        printf("\n[ERRO] Estacionamento totalmente lotado (%d/%d vagas).\n", TOTAL_VAGAS, TOTAL_VAGAS);
-        return 0;
+    if (!normalizar_id(id_bruto, id)) {
+        return NULL;
     }
-
-    if (!validar_identificador(id)) {
-        printf("\n[ERRO] Identificador inválido! Deve conter exatamente 7 caracteres alfanuméricos.\n");
-        return 0;
+    indice = indice_por_id(c, id);
+    if (indice < 0) {
+        return NULL;
     }
-
-    char id_norm[TAM_ID + 1];
-    normalizar_identificador(id_norm, id);
-
-    if (buscar_veiculo_por_id(est, id_norm) != -1) {
-        printf("\n[ERRO] Veículo com o identificador '%s' já está cadastrado.\n", id_norm);
-        return 0;
-    }
-
-    if (desc == NULL || strlen(desc) == 0 || strlen(desc) > MAX_DESC) {
-        printf("\n[ERRO] Descrição inválida.\n");
-        return 0;
-    }
-
-    if (cat != CATEGORIA_CARRO && cat != CATEGORIA_MOTO) {
-        printf("\n[ERRO] Categoria inválida (1 = Carro, 2 = Moto).\n");
-        return 0;
-    }
-
-    if (fileira < 1 || fileira > FILEIRAS || coluna < 1 || coluna > COLUNAS) {
-        printf("\n[ERRO] Posição inválida.\n");
-        return 0;
-    }
-
-    int f_idx = fileira - 1;
-    int c_idx = coluna - 1;
-
-    if (est->mapa[f_idx][c_idx] != 0) {
-        printf("\n[ERRO] Vaga F%d/C%d já está ocupada.\n", fileira, coluna);
-        return 0;
-    }
-
-    if (est->quantidade >= est->capacidade) {
-        size_t nova_capacidade = est->capacidade * 2;
-        Veiculo *temp = (Veiculo *) realloc(est->veiculos, nova_capacidade * sizeof(Veiculo));
-        if (temp == NULL) {
-            printf("\n[ERRO CRÍTICO] Falha ao alocar memória.\n");
-            return 0;
-        }
-        est->veiculos = temp;
-        est->capacidade = nova_capacidade;
-        printf("\n[INFO] Capacidade do vetor ampliada para %zu registros.\n", est->capacidade);
-    }
-
-    Veiculo *v = &est->veiculos[est->quantidade];
-    strcpy(v->identificador, id_norm);
-    strcpy(v->descricao, desc);
-    v->categoria = cat;
-    v->fileira = fileira;
-    v->coluna = coluna;
-
-    est->mapa[f_idx][c_idx] = 1;
-    est->quantidade++;
-
-    printf("\n[SUCESSO] Veículo '%s' cadastrado na vaga F%d/C%d.\n", v->identificador, v->fileira, v->coluna);
-    return 1;
+    return &c->dados[indice];
 }
 
-int consultar_veiculo(const Estacionamento *est, const char *id) {
-    if (est == NULL || !validar_identificador(id)) {
-        printf("\n[ERRO] Identificador inválido.\n");
-        return 0;
-    }
+/* Remove o registro do indice, deslocando os seguintes uma posicao para a
+   esquerda, para nao deixar lacunas. Nao libera o bloco de memoria. */
+void colecao_remover_indice(Colecao *c, int indice)
+{
+    int i;
 
-    char id_norm[TAM_ID + 1];
-    normalizar_identificador(id_norm, id);
-
-    int idx = buscar_veiculo_por_id(est, id_norm);
-    if (idx == -1) {
-        printf("\n[INFO] Veículo não localizado.\n");
-        return 0;
-    }
-
-    const Veiculo *v = &est->veiculos[idx];
-    printf("\n=== DETALHES DO VEÍCULO %s ===\n", v->identificador);
-    printf("Identificador: %s\n", v->identificador);
-    printf("Descrição    : %s\n", v->descricao);
-    printf("Categoria    : %s (%d)\n", (v->categoria == CATEGORIA_CARRO) ? "Carro" : "Moto", v->categoria);
-    printf("Localização  : Fileira %d, Coluna %d (F%d/C%d)\n", v->fileira, v->coluna, v->fileira, v->coluna);
-    printf("===================================\n");
-    return 1;
-}
-
-int atualizar_veiculo(Estacionamento *est, const char *id, const char *nova_desc, int nova_cat) {
-    if (est == NULL || !validar_identificador(id)) return 0;
-
-    char id_norm[TAM_ID + 1];
-    normalizar_identificador(id_norm, id);
-
-    int idx = buscar_veiculo_por_id(est, id_norm);
-    if (idx == -1) {
-        printf("\n[ERRO] Veículo '%s' não localizado.\n", id_norm);
-        return 0;
-    }
-
-    if (nova_desc == NULL || strlen(nova_desc) == 0 || strlen(nova_desc) > MAX_DESC ||
-       (nova_cat != CATEGORIA_CARRO && nova_cat != CATEGORIA_MOTO)) {
-        printf("\n[ERRO] Dados inválidos para atualização.\n");
-        return 0;
-    }
-
-    Veiculo *v = &est->veiculos[idx];
-    strcpy(v->descricao, nova_desc);
-    v->categoria = nova_cat;
-
-    printf("\n[SUCESSO] Veículo '%s' atualizado.\n", v->identificador);
-    return 1;
-}
-
-int mover_veiculo(Estacionamento *est, const char *id, int nova_fileira, int nova_coluna) {
-    if (est == NULL || !validar_identificador(id)) return 0;
-
-    char id_norm[TAM_ID + 1];
-    normalizar_identificador(id_norm, id);
-
-    int idx = buscar_veiculo_por_id(est, id_norm);
-    if (idx == -1) return 0;
-
-    if (nova_fileira < 1 || nova_fileira > FILEIRAS || nova_coluna < 1 || nova_coluna > COLUNAS) return 0;
-
-    Veiculo *v = &est->veiculos[idx];
-
-    if (v->fileira == nova_fileira && v->coluna == nova_coluna) {
-        printf("\n[AVISO] Veículo já está nesta vaga.\n");
-        return 1;
-    }
-
-    int dest_f = nova_fileira - 1;
-    int dest_c = nova_coluna - 1;
-
-    if (est->mapa[dest_f][dest_c] != 0) {
-        printf("\n[ERRO] Vaga de destino ocupada.\n");
-        return 0;
-    }
-
-    est->mapa[v->fileira - 1][v->coluna - 1] = 0;
-    est->mapa[dest_f][dest_c] = 1;
-
-    v->fileira = nova_fileira;
-    v->coluna = nova_coluna;
-
-    printf("\n[SUCESSO] Veículo movido para F%d/C%d.\n", v->fileira, v->coluna);
-    return 1;
-}
-
-int remover_veiculo(Estacionamento *est, const char *id) {
-    if (est == NULL || !validar_identificador(id)) return 0;
-
-    char id_norm[TAM_ID + 1];
-    normalizar_identificador(id_norm, id);
-
-    int idx = buscar_veiculo_por_id(est, id_norm);
-    if (idx == -1) return 0;
-
-    Veiculo *v = &est->veiculos[idx];
-    est->mapa[v->fileira - 1][v->coluna - 1] = 0;
-
-    for (size_t i = (size_t)idx; i < est->quantidade - 1; i++) {
-        est->veiculos[i] = est->veiculos[i + 1];
-    }
-    est->quantidade--;
-
-    printf("\n[SUCESSO] Veículo '%s' removido.\n", id_norm);
-    return 1;
-}
-
-void listar_veiculos(const Estacionamento *est) {
-    if (est == NULL) return;
-
-    if (est->quantidade == 0) {
-        printf("\n[INFO] Nenhum veículo cadastrado no momento.\n");
+    if (indice < 0 || indice >= c->quantidade) {
         return;
     }
-
-    printf("\n================ LISTA DE VEÍCULOS (%zu) ================\n", est->quantidade);
-    printf("%-5s | %-10s | %-10s | %-8s | %-30s\n", "Nº", "ID", "CATEGORIA", "VAGA", "DESCRIÇÃO");
-    printf("----------------------------------------------------------------------\n");
-
-    for (size_t i = 0; i < est->quantidade; i++) {
-        const Veiculo *v = &est->veiculos[i];
-        char vaga_str[16];
-        snprintf(vaga_str, sizeof(vaga_str), "F%d/C%d", v->fileira, v->coluna);
-        printf("%-5zu | %-10s | %-10s | %-8s | %-30s\n",
-               i + 1, v->identificador, (v->categoria == CATEGORIA_CARRO) ? "Carro" : "Moto",
-               vaga_str, v->descricao);
+    for (i = indice; i < c->quantidade - 1; i++) {
+        c->dados[i] = c->dados[i + 1];
     }
-    printf("================================================----------------------\n");
+    c->quantidade--;
 }
 
-void exibir_mapa_vagas(const Estacionamento *est) {
-    if (est == NULL) return;
+const char *nome_categoria(int categoria)
+{
+    if (categoria == CATEGORIA_CARRO) {
+        return "Carro";
+    }
+    if (categoria == CATEGORIA_MOTO) {
+        return "Moto";
+    }
+    return "?";
+}
 
-    printf("\n=== MAPA DE VAGAS ===\n     |");
-    for (int c = 1; c <= COLUNAS; c++) printf("  C%d ", c);
-    printf("\n-----+-------------------\n");
+void veiculo_exibir(const Veiculo *v)
+{
+    printf("Identificador: %s\n", v->id);
+    printf("Descricao....: %s\n", v->descricao);
+    printf("Categoria....: %s\n", nome_categoria(v->categoria));
+    printf("Posicao......: Fileira %d, Coluna %d\n", v->fileira, v->coluna);
+}
 
-    for (int f = 0; f < FILEIRAS; f++) {
-        printf(" F%d  |", f + 1);
-        for (int c = 0; c < COLUNAS; c++) {
-            printf(est->mapa[f][c] ? "  X  " : "  .  ");
+void colecao_listar(const Colecao *c)
+{
+    const Veiculo *p;
+    int i;
+
+    if (c->quantidade == 0) {
+        printf("Nenhum veiculo cadastrado.\n");
+        return;
+    }
+    printf("%-9s %-6s %-8s %s\n", "ID", "Categ.", "Vaga", "Descricao");
+    for (i = 0; i < c->quantidade; i++) {
+        p = c->dados + i;
+        printf("%-9s %-6s F%d/C%-4d %s\n", p->id, nome_categoria(p->categoria),
+               p->fileira, p->coluna, p->descricao);
+    }
+    printf("Total: %d veiculo(s).\n", c->quantidade);
+}
+
+/* ===== Mapa de vagas e relatorio ===== */
+
+void mapa_inicializar(int mapa[FILEIRAS][COLUNAS])
+{
+    int i, j;
+
+    for (i = 0; i < FILEIRAS; i++) {
+        for (j = 0; j < COLUNAS; j++) {
+            mapa[i][j] = VAGA_LIVRE;
+        }
+    }
+}
+
+/* Valores de 1 a 4 (fileira) e 1 a 5 (coluna), como o usuario informa. */
+int posicao_valida(int fileira, int coluna)
+{
+    return fileira >= 1 && fileira <= FILEIRAS && coluna >= 1 &&
+           coluna <= COLUNAS;
+}
+
+int mapa_contar_ocupadas(int mapa[FILEIRAS][COLUNAS])
+{
+    int i, j, total = 0;
+
+    for (i = 0; i < FILEIRAS; i++) {
+        for (j = 0; j < COLUNAS; j++) {
+            if (mapa[i][j] == VAGA_OCUPADA) {
+                total++;
+            }
+        }
+    }
+    return total;
+}
+
+void mapa_exibir(int mapa[FILEIRAS][COLUNAS])
+{
+    int i, j;
+
+    printf("   ");
+    for (j = 0; j < COLUNAS; j++) {
+        printf("C%d  ", j + 1);
+    }
+    printf("\n");
+    for (i = 0; i < FILEIRAS; i++) {
+        printf("F%d ", i + 1);
+        for (j = 0; j < COLUNAS; j++) {
+            printf("%c   ", mapa[i][j] == VAGA_OCUPADA ? 'X' : '.');
         }
         printf("\n");
     }
-    printf("---------------------\n");
-    printf("Legenda: X = Ocupada | . = Livre\n");
+    printf("Legenda: X = ocupada; . = livre\n");
 }
 
-void exibir_relatorio_ocupacao(const Estacionamento *est) {
-    if (est == NULL) return;
+void calcular_relatorio(const Colecao *c, int mapa[FILEIRAS][COLUNAS],
+                        Relatorio *r)
+{
+    int i;
 
-    int ocupadas = 0, carros = 0, motos = 0;
-
-    for (int f = 0; f < FILEIRAS; f++) {
-        for (int c = 0; c < COLUNAS; c++) {
-            if (est->mapa[f][c] == 1) ocupadas++;
+    r->total = TOTAL_VAGAS;
+    r->ocupadas = mapa_contar_ocupadas(mapa);
+    r->livres = r->total - r->ocupadas;
+    r->percentual = (r->ocupadas * 100.0) / r->total;
+    r->carros = 0;
+    r->motos = 0;
+    for (i = 0; i < c->quantidade; i++) {
+        if (c->dados[i].categoria == CATEGORIA_CARRO) {
+            r->carros++;
+        } else if (c->dados[i].categoria == CATEGORIA_MOTO) {
+            r->motos++;
         }
     }
-
-    for (size_t i = 0; i < est->quantidade; i++) {
-        if (est->veiculos[i].categoria == CATEGORIA_CARRO) carros++;
-        else if (est->veiculos[i].categoria == CATEGORIA_MOTO) motos++;
-    }
-
-    printf("\n=== RELATÓRIO DE OCUPAÇÃO ===\n");
-    printf("Total de Vagas Físicas   : %d\n", TOTAL_VAGAS);
-    printf("Vagas Ocupadas           : %d\n", ocupadas);
-    printf("Vagas Livres             : %d\n", TOTAL_VAGAS - ocupadas);
-    printf("Percentual de Ocupação   : %.2f%%\n", ((double)ocupadas / TOTAL_VAGAS) * 100.0);
-    printf("Quantidade de Carros     : %d\n", carros);
-    printf("Quantidade de Motos      : %d\n", motos);
-    printf("Capacidade Atual Vetor   : %zu registros\n", est->capacidade);
-    printf("Consistência Registros/Vagas: %s\n",
-           ((size_t)ocupadas == est->quantidade) ? "OK (Consistente)" : "ERRO (Inconsistente)");
-    printf("========================================\n");
 }
 
-void limpar_buffer_entrada(void) {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF) {}
+void exibir_relatorio(const Relatorio *r)
+{
+    printf("Total de vagas.....: %d\n", r->total);
+    printf("Vagas ocupadas.....: %d\n", r->ocupadas);
+    printf("Vagas livres.......: %d\n", r->livres);
+    printf("Percentual ocupacao: %.2f%%\n", r->percentual);
+    printf("Carros.............: %d\n", r->carros);
+    printf("Motos..............: %d\n", r->motos);
 }
 
-void ler_string(char *buffer, size_t tamanho) {
-    if (fgets(buffer, (int)tamanho, stdin) != NULL) {
-        size_t len = strlen(buffer);
-        if (len > 0 && buffer[len - 1] == '\n') buffer[len - 1] = '\0';
-        else limpar_buffer_entrada();
+int verificar_consistencia(const Colecao *c, int mapa[FILEIRAS][COLUNAS])
+{
+    int visto[FILEIRAS][COLUNAS];
+    int i, f, col;
+
+    mapa_inicializar(visto);
+    for (i = 0; i < c->quantidade; i++) {
+        f = c->dados[i].fileira;
+        col = c->dados[i].coluna;
+        if (!posicao_valida(f, col)) {
+            return 0;
+        }
+        if (mapa[f - 1][col - 1] != VAGA_OCUPADA) {
+            return 0;
+        }
+        if (visto[f - 1][col - 1] == 1) {
+            return 0; /* dois registros na mesma vaga */
+        }
+        visto[f - 1][col - 1] = 1;
     }
+    return mapa_contar_ocupadas(mapa) == c->quantidade;
+}
+
+/* ===== Cadastro e atualizacao ===== */
+
+/* Cadastro: todas as validacoes acontecem antes de mexer na colecao ou no
+   mapa; o realloc (se necessario) e o ultimo passo que pode falhar. */
+Resultado cadastrar_veiculo(Colecao *c, int mapa[FILEIRAS][COLUNAS],
+                            const char *id_bruto, const char *descricao,
+                            int categoria, int fileira, int coluna)
+{
+    char id[TAM_ID + 1];
+    Veiculo *novo;
+
+    if (c->quantidade >= TOTAL_VAGAS) {
+        return RES_LOTADO;
+    }
+    if (!normalizar_id(id_bruto, id)) {
+        return RES_ID_INVALIDO;
+    }
+    if (indice_por_id(c, id) >= 0) {
+        return RES_ID_DUPLICADO;
+    }
+    if (!descricao_valida(descricao)) {
+        return RES_DESC_INVALIDA;
+    }
+    if (!categoria_valida(categoria)) {
+        return RES_CATEGORIA_INVALIDA;
+    }
+    if (!posicao_valida(fileira, coluna)) {
+        return RES_POSICAO_INVALIDA;
+    }
+    if (mapa[fileira - 1][coluna - 1] != VAGA_LIVRE) {
+        return RES_VAGA_OCUPADA;
+    }
+    if (c->quantidade >= c->capacidade && !colecao_ampliar(c)) {
+        return RES_SEM_MEMORIA;
+    }
+
+    novo = &c->dados[c->quantidade];
+    snprintf(novo->id, sizeof novo->id, "%s", id);
+    snprintf(novo->descricao, sizeof novo->descricao, "%s", descricao);
+    novo->categoria = categoria;
+    novo->fileira = fileira;
+    novo->coluna = coluna;
+    c->quantidade++;
+    mapa[fileira - 1][coluna - 1] = VAGA_OCUPADA;
+    return RES_OK;
+}
+
+/* Atualizacao: valida os dois novos valores e so depois altera os dois. */
+Resultado atualizar_veiculo(Colecao *c, const char *id_bruto,
+                            const char *nova_descricao, int nova_categoria)
+{
+    char id[TAM_ID + 1];
+    int indice;
+
+    if (!normalizar_id(id_bruto, id)) {
+        return RES_ID_INVALIDO;
+    }
+    indice = indice_por_id(c, id);
+    if (indice < 0) {
+        return RES_NAO_ENCONTRADO;
+    }
+    if (nova_descricao == NULL && nova_categoria == 0) {
+        return RES_NADA_A_ALTERAR;
+    }
+    if (nova_descricao != NULL && !descricao_valida(nova_descricao)) {
+        return RES_DESC_INVALIDA;
+    }
+    if (nova_categoria != 0 && !categoria_valida(nova_categoria)) {
+        return RES_CATEGORIA_INVALIDA;
+    }
+
+    if (nova_descricao != NULL) {
+        snprintf(c->dados[indice].descricao, sizeof c->dados[indice].descricao,
+                 "%s", nova_descricao);
+    }
+    if (nova_categoria != 0) {
+        c->dados[indice].categoria = nova_categoria;
+    }
+    return RES_OK;
+}
+
+const char *mensagem_resultado(Resultado r)
+{
+    switch (r) {
+    case RES_OK:
+        return "Operacao realizada com sucesso.";
+    case RES_ID_INVALIDO:
+        return "Identificador invalido: use exatamente 7 caracteres (A-Z e 0-9).";
+    case RES_ID_DUPLICADO:
+        return "Ja existe um veiculo com esse identificador.";
+    case RES_DESC_INVALIDA:
+        return "Descricao invalida: nao pode ser vazia nem passar de 60 caracteres.";
+    case RES_CATEGORIA_INVALIDA:
+        return "Categoria invalida: use 1 (carro) ou 2 (moto).";
+    case RES_POSICAO_INVALIDA:
+        return "Posicao invalida: fileira de 1 a 4 e coluna de 1 a 5.";
+    case RES_VAGA_OCUPADA:
+        return "Vaga ocupada: operacao recusada.";
+    case RES_LOTADO:
+        return "Estacionamento lotado: as 20 vagas estao ocupadas.";
+    case RES_SEM_MEMORIA:
+        return "Erro: falta de memoria. Nada foi alterado.";
+    case RES_NAO_ENCONTRADO:
+        return "Veiculo nao localizado.";
+    case RES_MESMA_VAGA:
+        return "O veiculo ja esta nessa vaga. Nada foi alterado.";
+    case RES_NADA_A_ALTERAR:
+        return "Nenhum dado informado para alterar.";
+    }
+    return "Erro desconhecido.";
+}
+
+/* ===== Movimentacao e remocao ===== */
+
+/* Movimentacao: so mexe no mapa e no registro depois de validar tudo. */
+Resultado mover_veiculo(Colecao *c, int mapa[FILEIRAS][COLUNAS],
+                        const char *id_bruto, int nova_fileira,
+                        int nova_coluna)
+{
+    char id[TAM_ID + 1];
+    int indice;
+    Veiculo *v;
+
+    if (!normalizar_id(id_bruto, id)) {
+        return RES_ID_INVALIDO;
+    }
+    indice = indice_por_id(c, id);
+    if (indice < 0) {
+        return RES_NAO_ENCONTRADO;
+    }
+    if (!posicao_valida(nova_fileira, nova_coluna)) {
+        return RES_POSICAO_INVALIDA;
+    }
+
+    v = &c->dados[indice];
+    if (v->fileira == nova_fileira && v->coluna == nova_coluna) {
+        return RES_MESMA_VAGA;
+    }
+    if (mapa[nova_fileira - 1][nova_coluna - 1] != VAGA_LIVRE) {
+        return RES_VAGA_OCUPADA;
+    }
+
+    mapa[v->fileira - 1][v->coluna - 1] = VAGA_LIVRE;
+    mapa[nova_fileira - 1][nova_coluna - 1] = VAGA_OCUPADA;
+    v->fileira = nova_fileira;
+    v->coluna = nova_coluna;
+    return RES_OK;
+}
+
+/* Remocao: libera a vaga e tira o registro do vetor sem deixar lacuna. */
+Resultado remover_veiculo(Colecao *c, int mapa[FILEIRAS][COLUNAS],
+                          const char *id_bruto)
+{
+    char id[TAM_ID + 1];
+    int indice;
+    const Veiculo *v;
+
+    if (!normalizar_id(id_bruto, id)) {
+        return RES_ID_INVALIDO;
+    }
+    indice = indice_por_id(c, id);
+    if (indice < 0) {
+        return RES_NAO_ENCONTRADO;
+    }
+
+    v = &c->dados[indice];
+    mapa[v->fileira - 1][v->coluna - 1] = VAGA_LIVRE;
+    colecao_remover_indice(c, indice);
+    return RES_OK;
 }
