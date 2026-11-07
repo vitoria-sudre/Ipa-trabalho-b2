@@ -1,11 +1,17 @@
-# Compilados e executáveis 
-*.o 
-*.out 
-*.exe 
-estacionamento 
+# Executaveis e objetos compilados (nao entregar)
+estacionamento
+estacionamento.exe
+testes
+testes.exe
+*.o
+*.out
+a.out
 
-# Arquivos de sistema e editores 
-.DS_Store 
-Thumbs.db 
-.vscode/ 
+# IDEs
+.vscode/
 .idea/
+*.cbp
+*.layout
+*.depend
+bin/
+obj/
