@@ -199,16 +199,16 @@ Os exemplos abaixo foram retirados das execuções realizadas no terminal.
 
 | Teste | Entrada ou operação | Resultado esperado | Resultado observado | Situação |
 |---|---|---|---|---|
-T01| Verificar o estacionamento inicialmente vazio| Apresentar as 20 vagas livres| A execução específica do cenário vazio não está demonstrada nos registros apresentados nesta documentação| Não documentado neste registro
-T02| Cadastrar veículos com dados válidos| Registrar os veículos e apresentar seus dados| CALAKS7 e CALAKS8 foram cadastrados com sucesso| Aprovado
-T03| Tentar cadastrar identificador já existente| Recusar o cadastro duplicado| O sistema informou que já existia um veículo com esse identificador| Aprovado
-T04| Tentar cadastrar em vaga ocupada ou posição inválida| Recusar a operação| O sistema apresentou mensagens de vaga ocupada e posição inválida| Aprovado
-T05| Cadastrar o terceiro veículo após os dois primeiros| Ampliar a capacidade interna de 2 para 4 posições| CALAKS9 foi cadastrado com sucesso; a implementação de "realloc" e a duplicação da capacidade foram conferidas no código| Aprovado na implementação
-T06| Atualizar descrição ou categoria| Apresentar os novos dados| BBB0002 foi atualizado para descrição carro e categoria Moto| Aprovado
-T07| Mover veículo para vaga livre| Atualizar a posição do veículo| BBB0002 foi movido para F4/C1| Aprovado
-T08| Remover veículo cadastrado| Excluir o registro e liberar a vaga| BBB0002 foi removido e não apareceu na listagem seguinte| Aprovado
-T09| Tentar cadastrar o 21º veículo| Recusar o cadastro quando as 20 vagas estiverem ocupadas| O sistema informou que o estacionamento estava lotado| Aprovado
-T10| Encerrar o programa| Finalizar a execução e liberar a memória alocada| O terminal apresentou a mensagem de encerramento e memória liberada| Aprovado na execução
+| T01 | Verificar o estacionamento inicialmente vazio | Apresentar as 20 vagas livres | A execução específica do cenário vazio não está demonstrada nos registros apresentados nesta documentação | Não documentado neste registro |
+| T02 | Cadastrar veículos com dados válidos | Registrar os veículos e apresentar seus dados | CALAKS7 e CALAKS8 foram cadastrados com sucesso | Aprovado |
+| T03 | Tentar cadastrar identificador já existente | Recusar o cadastro duplicado | O sistema informou que já existia um veículo com esse identificador | Aprovado |
+| T04 | Tentar cadastrar em vaga ocupada ou posição inválida | Recusar a operação | O sistema apresentou mensagens de vaga ocupada e posição inválida | Aprovado |
+| T05 | Cadastrar o terceiro veículo após os dois primeiros | Ampliar a capacidade interna de 2 para 4 posições | CALAKS9 foi cadastrado com sucesso; a implementação de `realloc` e a duplicação da capacidade foram conferidas no código | Aprovado na implementação |
+| T06 | Atualizar descrição ou categoria | Apresentar os novos dados | BBB0002 foi atualizado para descrição carro e categoria Moto | Aprovado |
+| T07 | Mover veículo para vaga livre | Atualizar a posição do veículo | BBB0002 foi movido para F4/C1 | Aprovado |
+| T08 | Remover veículo cadastrado | Excluir o registro e liberar a vaga | BBB0002 foi removido e não apareceu na listagem seguinte | Aprovado |
+| T09 | Tentar cadastrar o 21º veículo | Recusar o cadastro quando as 20 vagas estiverem ocupadas | O sistema informou que o estacionamento estava lotado | Aprovado |
+| T10 | Encerrar o programa | Finalizar a execução e liberar a memória alocada | O terminal apresentou a mensagem de encerramento e memória liberada | Aprovado na execução |
 
 ### 7.1. T02 — Cadastro de Veículos Válidos
 
