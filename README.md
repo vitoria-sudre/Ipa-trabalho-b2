@@ -49,7 +49,7 @@ O sistema permite cadastrar, consultar, atualizar, movimentar, remover e listar 
 
 O projeto utiliza uma estrutura para armazenar os dados dos veículos, uma matriz para representar as vagas e um vetor dinâmico para armazenar os registros.
 
-### 3.1.Estrutura Veiculo
+### 3.1. Estrutura Veiculo
 
 Armazena as informações de cada veículo cadastrado.
 
@@ -63,7 +63,7 @@ typedef struct {
 } Veiculo;
 ```
 
-### 3.2.Matriz do Estacionamento
+### 3.2. Matriz do Estacionamento
 
 A matriz possui 4 fileiras e 5 colunas, totalizando 20 vagas.
 
@@ -78,12 +78,13 @@ Sua capacidade inicial é de 2 registros. Quando a quantidade de veículos ating
 
 Exemplo de crescimento:
 
-Etapa| Capacidade
-Inicial| 2
-Primeira expansão| 4
-Segunda expansão| 8
-Terceira expansão| 16
-Quarta expansão| 32
+| Etapa | Capacidade |
+|---|---:|
+| Inicial | 2 |
+| Primeira expansão | 4 |
+| Segunda expansão | 8 |
+| Terceira expansão | 16 |
+| Quarta expansão | 32 |
 
 Mesmo que a capacidade interna chegue a 32, o estacionamento continua limitado a 20 veículos, devido à quantidade de vagas físicas.
 
@@ -147,23 +148,23 @@ lpa-trabalho-b2/
 
 ### Principais funções
 
-- inicializar_estacionamento()": inicializa os dados do estacionamento.
-- "liberar_estacionamento()": libera a memória utilizada pelo vetor dinâmico.
-- "cadastrar_veiculo()": realiza o cadastro de veículos.
-- "consultar_veiculo()": consulta um veículo pelo identificador.
-- "atualizar_veiculo()": atualiza os dados do veículo.
-- "mover_veiculo()": altera a posição do veículo.
-- "remover_veiculo()": remove um veículo cadastrado.
-- "listar_veiculos()": apresenta os veículos cadastrados.
-- "exibir_mapa_vagas()": apresenta o mapa do estacionamento.
-- "exibir_relatorio_ocupacao()": apresenta o relatório de ocupação.
+- inicializar_estacionamento(): inicializa os dados do estacionamento.
+- liberar_estacionamento(): libera a memória utilizada pelo vetor dinâmico.
+- cadastrar_veiculo(): realiza o cadastro de veículos.
+- consultar_veiculo(): consulta um veículo pelo identificador.
+- atualizar_veiculo(): atualiza os dados do veículo.
+- mover_veiculo(): altera a posição do veículo.
+- remover_veiculo(): remove um veículo cadastrado.
+- listar_veiculos(): apresenta os veículos cadastrados.
+- exibir_mapa_vagas(): apresenta o mapa do estacionamento.
+- exibir_relatorio_ocupacao(): apresenta o relatório de ocupação.
 ---
 
 ## 6. Instruções de Compilação e Execução
 
 Para compilar o programa, é necessário ter o compilador GCC instalado.
 
-### 6.1.Compilação (GCC C11)
+### 6.1. Compilação (GCC C11)
 
 Execute o seguinte comando na pasta principal do projeto:
 
@@ -461,7 +462,7 @@ Dessa forma:
 - Ao mover um veículo, a posição anterior é liberada e a nova posição é ocupada.
 - Ao remover um veículo, o registro é excluído e a vaga é liberada.
 - O relatório deve refletir a situação atual do estacionamento.
-- 
+  
 ## 10. Declaração Individual de Autoria e Uso de IA
 
 ### Declaração de Vitoria Sudre de Melo
