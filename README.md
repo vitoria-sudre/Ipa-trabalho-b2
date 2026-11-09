@@ -494,8 +494,8 @@ Dessa forma:
 - Ao mover um veículo, a posição anterior é liberada e a nova posição é ocupada.
 - Ao remover um veículo, o registro é excluído e a vaga é liberada.
 - O relatório deve refletir a situação atual do estacionamento.
-
-## . Declaração Individual de Autoria e Uso de IA
+- 
+## 11. Declaração Individual de Autoria e Uso de IA
 
 ### Declaração de Vitoria Sudre de Melo
 Declaro que participei do desenvolvimento do Sistema  de Estacionamento, atuando na estrutura de dados, no menu principal, no cadastro de veículos, nas validações e na matriz do mapa de vagas. Utilizamos o ChatGPT como ferramenta de inteligência artificial para obter uma base inicial e orientações para a estruturação do projeto. As sugestões foram analisadas, adaptadas e revisadas durante o desenvolvimento.
