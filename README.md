@@ -446,41 +446,8 @@ Veiculo CCC0976 cadastrado na vaga F2/C1.
 
 Resultado: o sistema converteu o identificador para letras maiúsculas.
 
-### 9. Conferência do Mapa e do Relatório
 
-O mapa apresenta as 20 vagas distribuídas em quatro fileiras e cinco colunas.
-
-Exemplo de mapa com todas as vagas ocupadas:
-
-   C1  C2  C3  C4  C5
-F1 X   X   X   X   X
-F2 X   X   X   X   X
-F3 X   X   X   X   X
-F4 X   X   X   X   X
-
-Legenda: X = ocupada; . = livre
-
-O relatório também foi conferido com cinco veículos cadastrados:
-
-Total de vagas.....: 20
-Vagas ocupadas.....: 5
-Vagas livres.......: 15
-Percentual ocupacao: 25.00%
-Carros.............: 3
-Motos..............: 2
-
-E com o estacionamento totalmente ocupado:
-
-Total de vagas.....: 20
-Vagas ocupadas.....: 20
-Vagas livres.......: 0
-Percentual ocupacao: 100.00%
-Carros.............: 9
-Motos..............: 11
-
-Esses resultados demonstram o funcionamento do cálculo de ocupação e da contagem por categoria nos cenários executados.
-
-### 10. Consistência dos Dados
+### 9. Consistência dos Dados
 
 O sistema deve manter a correspondência entre os registros armazenados no vetor dinâmico e as posições ocupadas na matriz.
 
@@ -495,7 +462,7 @@ Dessa forma:
 - Ao remover um veículo, o registro é excluído e a vaga é liberada.
 - O relatório deve refletir a situação atual do estacionamento.
 - 
-## 11. Declaração Individual de Autoria e Uso de IA
+## 10. Declaração Individual de Autoria e Uso de IA
 
 ### Declaração de Vitoria Sudre de Melo
 Declaro que participei do desenvolvimento do Sistema  de Estacionamento, atuando na estrutura de dados, no menu principal, no cadastro de veículos, nas validações e na matriz do mapa de vagas. Utilizamos o ChatGPT como ferramenta de inteligência artificial para obter uma base inicial e orientações para a estruturação do projeto. As sugestões foram analisadas, adaptadas e revisadas durante o desenvolvimento.
