@@ -172,9 +172,9 @@ gcc -std=c11 -Wall -Wextra -pedantic src/main.c src/estacionamento.c -o estacion
 ```
 
 ### 6.2. Execução no Linux ou macOS
-
+```bash
 ./estacionamento
-
+```
 
 ### 6.3. Execução no Windows (PowerShell)
 
@@ -185,9 +185,9 @@ gcc -std=c11 -Wall -Wextra -pedantic src/main.c src/estacionamento.c -o programa
 ```
 
 Para executar:
-
+```bash
 .\programa.exe
-
+```
 
 ## 7. Casos de Teste Documentados
 
