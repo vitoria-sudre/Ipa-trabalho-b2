@@ -33,19 +33,23 @@ O sistema permite cadastrar, consultar, atualizar, movimentar, remover e listar 
 2. Cada veículo possui um identificador único de 7 caracteres alfanuméricos.
 3. A descrição do veículo deve conter entre 1 e 60 caracteres.
 4. As categorias são: 1 para carro e 2 para moto.
-5. O número de veículos cadastrados deve corresponder ao número de vagas ocupadas na matriz.
-6. O vetor dinâmico começa com capacidade para 2 veículos e dobra de tamanho utilizando `realloc` quando necessário.
-7. O sistema permite no máximo 20 veículos cadastrados.
-8. Não é permitido cadastrar dois veículos na mesma vaga.
-9. Ao remover um veículo, a vaga correspondente deve ser liberada.
+5. Os identificadores são convertidos para letras maiúsculas.
+6. Não é permitido cadastrar identificadores duplicados.
+7. O número de veículos cadastrados deve corresponder ao número de vagas ocupadas na matriz.
+8. O vetor dinâmico começa com capacidade para 2 veículos e dobra de tamanho utilizando "realloc" quando necessário.
+9. O sistema permite no máximo 20 veículos cadastrados.
+10. Não é permitido cadastrar dois veículos na mesma vaga.
+11. Ao remover um veículo, a vaga correspondente deve ser liberada.
+12. Operações inválidas devem ser recusadas sem modificar os dados do estacionamento.
+
 
 ---
 
 ## 3. Estruturas de Dados Utilizadas
 
-O projeto utiliza duas estruturas principais.
+O projeto utiliza uma estrutura para armazenar os dados dos veículos, uma matriz para representar as vagas e um vetor dinâmico para armazenar os registros.
 
-### Estrutura Veiculo
+### 3.1.Estrutura Veiculo
 
 Armazena as informações de cada veículo cadastrado.
 
@@ -59,20 +63,30 @@ typedef struct {
 } Veiculo;
 ```
 
-### Estrutura Estacionamento
+### 3.2.Matriz do Estacionamento
 
-Armazena o mapa de vagas e o vetor dinâmico de veículos.
+A matriz possui 4 fileiras e 5 colunas, totalizando 20 vagas.
 
-```c
-typedef struct {
-    int mapa[4][5];
-    Veiculo *veiculos;
-    size_t quantidade;
-    size_t capacidade;
-} Estacionamento;
-```
+- "0": vaga livre.
+- "1": vaga ocupada.
 
-A matriz representa as vagas físicas do estacionamento, enquanto o vetor dinâmico armazena os registros dos veículos cadastrados.
+### 3.3. Vetor Dinâmico
+
+O vetor armazena os registros dos veículos e utiliza alocação dinâmica de memória.
+
+Sua capacidade inicial é de 2 registros. Quando a quantidade de veículos atinge a capacidade disponível, o sistema utiliza "realloc" para dobrar o espaço reservado.
+
+Exemplo de crescimento:
+
+Etapa| Capacidade
+Inicial| 2
+Primeira expansão| 4
+Segunda expansão| 8
+Terceira expansão| 16
+Quarta expansão| 32
+
+Mesmo que a capacidade interna chegue a 32, o estacionamento continua limitado a 20 veículos, devido à quantidade de vagas físicas.
+
 
 ---
 
@@ -82,7 +96,7 @@ O sistema apresenta as seguintes opções:
 
 ```text
 =========================================
-   SISTEMA DE GESTÃO DE ESTACIONAMENTO
+         ESTACIONAMENTO
 =========================================
 1 - Cadastrar veículo
 2 - Consultar veículo por identificador
@@ -98,16 +112,15 @@ O sistema apresenta as seguintes opções:
 
 ### Descrição das funcionalidades
 
-- **Cadastrar veículo:** registra um novo veículo em uma vaga disponível.
-- **Consultar veículo:** localiza um veículo pelo identificador.
-- **Atualizar veículo:** modifica a descrição ou a categoria.
-- **Mover veículo:** transfere um veículo para outra vaga livre.
-- **Remover veículo:** exclui o cadastro e libera a vaga.
-- **Listar veículos:** apresenta os veículos cadastrados.
-- **Exibir mapa:** mostra a situação das 20 vagas.
-- **Relatório de ocupação:** apresenta a quantidade de vagas ocupadas e livres e informações sobre as categorias dos veículos.
+- Cadastrar veículo: registra um novo veículo em uma vaga disponível, verificando os dados e a disponibilidade.
+- Consultar veículo: localiza um veículo pelo identificador e apresenta seus dados completos.
+- Atualizar veículo: permite modificar a descrição ou a categoria do veículo.
+- Mover veículo: transfere um veículo para outra vaga livre, atualizando sua posição.
+- Remover veículo: exclui o cadastro e libera a vaga correspondente.
+- Listar veículos: apresenta os veículos cadastrados e suas informações.
+- Exibir mapa: mostra a situação das 20 vagas, utilizando "X" para ocupada e "." para livre.
+- Relatório de ocupação: apresenta o total de vagas, vagas ocupadas, vagas livres, percentual de ocupação, quantidade de carros e motos, quantidade de registros e capacidade do vetor, conforme apresentado pela implementação.
 
----
 
 ## 5. Organização dos Arquivos
 
@@ -115,42 +128,42 @@ O projeto está organizado da seguinte forma:
 
 ```text
 lpa-trabalho-b2/
-│
-├── README.md
-├── .gitignore
-│
-└── src/
-    ├── main.c
+── src/
+    ├── estacionamento.c
     ├── estacionamento.h
-    └── estacionamento.c
+    └── main.c
+├── .gitignore
+├── Licença
+├──  README.md
 ```
 
 ### Responsabilidade dos arquivos
+- main.c: contém a função principal, o menu interativo e o controle da execução do programa.
+- estacionamento.h: apresenta as estruturas, constantes e protótipos das funções.
+- estacionamento.c: contém a implementação das funcionalidades do sistema.
+- README.md: apresenta a documentação, as funcionalidades, as instruções de execução e os resultados dos testes.
+- .gitignore: define os arquivos que não devem ser enviados ao repositório.
 
-- **main.c:** contém a função principal, o menu interativo e o controle do programa.
-- **estacionamento.h:** apresenta as estruturas, constantes e protótipos das funções.
-- **estacionamento.c:** contém a implementação das funcionalidades do sistema.
 
 ### Principais funções
 
-- `inicializar_estacionamento()`: inicializa a matriz e o vetor dinâmico.
-- `liberar_estacionamento()`: libera a memória utilizada pelo vetor dinâmico.
-- `cadastrar_veiculo()`: realiza o cadastro de veículos.
-- `consultar_veiculo()`: consulta um veículo pelo identificador.
-- `atualizar_veiculo()`: atualiza os dados do veículo.
-- `mover_veiculo()`: altera a posição do veículo.
-- `remover_veiculo()`: remove um veículo cadastrado.
-- `listar_veiculos()`: apresenta os veículos cadastrados.
-- `exibir_mapa_vagas()`: apresenta o mapa do estacionamento.
-- `exibir_relatorio_ocupacao()`: apresenta o relatório de ocupação.
-
+- inicializar_estacionamento()": inicializa os dados do estacionamento.
+- "liberar_estacionamento()": libera a memória utilizada pelo vetor dinâmico.
+- "cadastrar_veiculo()": realiza o cadastro de veículos.
+- "consultar_veiculo()": consulta um veículo pelo identificador.
+- "atualizar_veiculo()": atualiza os dados do veículo.
+- "mover_veiculo()": altera a posição do veículo.
+- "remover_veiculo()": remove um veículo cadastrado.
+- "listar_veiculos()": apresenta os veículos cadastrados.
+- "exibir_mapa_vagas()": apresenta o mapa do estacionamento.
+- "exibir_relatorio_ocupacao()": apresenta o relatório de ocupação.
 ---
 
 ## 6. Instruções de Compilação e Execução
 
 Para compilar o programa, é necessário ter o compilador GCC instalado.
 
-### Compilação (GCC C11)
+### 6.1.Compilação (GCC C11)
 
 Execute o seguinte comando na pasta principal do projeto:
 
@@ -158,64 +171,333 @@ Execute o seguinte comando na pasta principal do projeto:
 gcc -std=c11 -Wall -Wextra -pedantic src/main.c src/estacionamento.c -o estacionamento
 ```
 
-### Execução no Linux ou macOS
+### 6.2. Execução no Linux ou macOS
 
-```bash
 ./estacionamento
-```
 
-### Execução no Windows
 
-```bash
-estacionamento.exe
-```
+### 6.3. Execução no Windows (PowerShell)
 
----
+Para compilar:
+
+gcc -std=c11 -Wall -Wextra -pedantic src/main.c src/estacionamento.c -o programa.exe
+
+Para executar:
+
+.\programa.exe
+
 
 ## 7. Casos de Teste Documentados
 
-Os testes têm como objetivo verificar as funcionalidades, as validações e as regras de negócio do sistema.
+Foram realizados testes para verificar o funcionamento das funcionalidades, as validações de entrada, o gerenciamento de memória e as regras de negócio.
+
+Os exemplos abaixo foram retirados das execuções realizadas no terminal.
+
 
 | Teste | Entrada ou operação | Resultado esperado | Resultado observado | Situação |
 |---|---|---|---|---|
-| T01 | Consultar o mapa sem veículos cadastrados | Apresentar 20 vagas livres | Preencher após executar | Pendente |
-| T02 | Cadastrar veículo com dados válidos | Cadastro realizado com sucesso | Preencher após executar | Pendente |
-| T03 | Cadastrar identificador já existente | Cadastro rejeitado | Preencher após executar | Pendente |
-| T04 | Tentar cadastrar veículo em vaga ocupada | Operação recusada | Preencher após executar | Pendente |
-| T05 | Cadastrar o terceiro veículo | Vetor expandido de 2 para 4 posições | Preencher após executar | Pendente |
-| T06 | Atualizar descrição ou categoria | Dados atualizados | Preencher após executar | Pendente |
-| T07 | Mover veículo para uma vaga livre | Nova posição registrada | Preencher após executar | Pendente |
-| T08 | Remover veículo cadastrado | Registro removido e vaga liberada | Preencher após executar | Pendente |
-| T09 | Tentar cadastrar o 21º veículo | Cadastro recusado por lotação máxima | Preencher após executar | Pendente |
-| T10 | Encerrar o programa | Memória do vetor liberada com `free()` | Preencher após executar | Pendente |
+T01| Verificar o estacionamento inicialmente vazio| Apresentar as 20 vagas livres| A execução específica do cenário vazio não está demonstrada nos registros apresentados nesta documentação| Não documentado neste registro
+T02| Cadastrar veículos com dados válidos| Registrar os veículos e apresentar seus dados| CALAKS7 e CALAKS8 foram cadastrados com sucesso| Aprovado
+T03| Tentar cadastrar identificador já existente| Recusar o cadastro duplicado| O sistema informou que já existia um veículo com esse identificador| Aprovado
+T04| Tentar cadastrar em vaga ocupada ou posição inválida| Recusar a operação| O sistema apresentou mensagens de vaga ocupada e posição inválida| Aprovado
+T05| Cadastrar o terceiro veículo após os dois primeiros| Ampliar a capacidade interna de 2 para 4 posições| CALAKS9 foi cadastrado com sucesso; a implementação de "realloc" e a duplicação da capacidade foram conferidas no código| Aprovado na implementação
+T06| Atualizar descrição ou categoria| Apresentar os novos dados| BBB0002 foi atualizado para descrição carro e categoria Moto| Aprovado
+T07| Mover veículo para vaga livre| Atualizar a posição do veículo| BBB0002 foi movido para F4/C1| Aprovado
+T08| Remover veículo cadastrado| Excluir o registro e liberar a vaga| BBB0002 foi removido e não apareceu na listagem seguinte| Aprovado
+T09| Tentar cadastrar o 21º veículo| Recusar o cadastro quando as 20 vagas estiverem ocupadas| O sistema informou que o estacionamento estava lotado| Aprovado
+T10| Encerrar o programa| Finalizar a execução e liberar a memória alocada| O terminal apresentou a mensagem de encerramento e memória liberada| Aprovado na execução
 
-**Observação:** os resultados observados e a situação dos testes devem ser preenchidos depois que cada teste for executado. Um teste deve ser marcado como aprovado somente quando o resultado corresponder ao esperado.
+7.1. T02 — Cadastro de Veículos Válidos
 
----
+Foram cadastrados dois veículos com informações válidas.
 
-## 8. Colaboração no GitHub e Branches
+Primeiro cadastro:
 
-O desenvolvimento foi organizado por meio de branches para separar as funcionalidades implementadas por cada integrante.
+Identificador: CALAKS7
+Descricao: preto
+Categoria: 2
+Fileira: 1
+Coluna: 2
 
-- **main:** branch principal do projeto.
-- **feature/cadastro-mapa:** desenvolvimento do cadastro, menu e mapa de vagas por Vitoria Sudre de Melo.
-- **feature/expansao-relatorio:** desenvolvimento do vetor dinâmico, movimentação, remoção e relatórios por Natasha Novaes dos Santos.
+Veiculo CALAKS7 cadastrado na vaga F1/C2.
 
-As alterações desenvolvidas nas branches devem ser integradas à branch principal.
+Segundo cadastro:
 
-Cada integrante deve possuir pelo menos quatro commits significativos, demonstrando sua participação no desenvolvimento do projeto.
+Identificador: CALAKS8
+Descricao: verde
+Categoria: 1
+Fileira: 1
+Coluna: 1
 
----
+Veiculo CALAKS8 cadastrado na vaga F1/C1.
 
-## 9. Declaração Individual de Autoria e Uso de IA
+Depois dos dois cadastros, o relatório apresentou:
+
+Total de vagas.....: 20
+Vagas ocupadas.....: 2
+Vagas livres.......: 18
+Percentual ocupacao: 10.00%
+Carros.............: 1
+Motos..............: 1
+
+Resultado: os dois veículos foram cadastrados e o relatório apresentou duas vagas ocupadas.
+
+7.2. T03 — Identificador Duplicado
+
+Foi realizada uma tentativa de cadastrar novamente o identificador "bbb0002", que já havia sido cadastrado anteriormente como "BBB0002".
+
+Resultado apresentado:
+
+Identificador: bbb0002
+Descricao: branco
+Categoria: 1
+
+Cadastro cancelado. Ja existe um veiculo com esse identificador.
+
+Resultado: o sistema reconheceu o identificador duplicado, mesmo com letras minúsculas, e recusou o cadastro.
+
+7.3. T04 — Vaga Ocupada e Posição Inválida
+
+Foi tentado cadastrar um veículo em uma vaga já ocupada.
+
+Identificador: bbb0002
+Fileira: 1
+Coluna: 5
+
+Cadastro cancelado. Vaga ocupada: operacao recusada.
+
+Também foi testada uma posição fora dos limites permitidos:
+
+Identificador: aaa9990
+Fileira: 0
+Coluna: 6
+
+Cadastro cancelado. Posicao invalida:
+fileira de 1 a 4 e coluna de 1 a 5.
+
+Resultado: as operações inválidas foram recusadas.
+
+7.4. T05 — Crescimento do Vetor Dinâmico
+
+O vetor começa com capacidade para 2 veículos.
+
+Foram cadastrados dois veículos e, em seguida, um terceiro:
+
+Identificador: CALAKS9
+Descricao: azul
+Categoria: 1
+Fileira: 1
+Coluna: 3
+
+Veiculo CALAKS9 cadastrado na vaga F1/C3.
+
+Após o terceiro cadastro, o relatório apresentou:
+
+Total de vagas.....: 20
+Vagas ocupadas.....: 3
+Vagas livres.......: 17
+Percentual ocupacao: 15.00%
+Carros.............: 2
+Motos..............: 1
+
+A implementação utiliza "realloc" para ampliar a capacidade do vetor quando necessário, seguindo a sequência:
+
+2 -> 4 -> 8 -> 16 -> 32
+
+A função utiliza um ponteiro temporário para receber o resultado de "realloc", evitando perder a referência à memória anterior caso a realocação falhe.
+
+Resultado: o terceiro cadastro foi realizado e os registros anteriores foram preservados. A lógica de expansão de 2 para 4 foi conferida no código-fonte. O relatório apresenta a ocupação física, não a capacidade interna do vetor.
+
+7.5. T06 — Atualização de Veículo
+
+Foi atualizado o veículo "BBB0002", modificando sua descrição e categoria.
+
+Entrada utilizada:
+
+Identificador: bbb0002
+Nova descricao: carro
+Nova categoria: 2
+
+Resultado apresentado:
+
+Veiculo atualizado:
+Identificador: BBB0002
+Descricao....: carro
+Categoria....: Moto
+Posicao......: Fileira 2, Coluna 4
+
+Resultado: os dados foram atualizados corretamente.
+
+7.6. T07 — Movimentação de Veículo
+
+Foi realizada a movimentação do veículo "BBB0002" para a fileira 4, coluna 1.
+
+Identificador: bbb0002
+Nova fileira: 4
+Nova coluna: 1
+
+Veiculo movido para a vaga F4/C1.
+
+Resultado: o sistema confirmou a movimentação para a nova posição.
+
+7.7. T08 — Remoção de Veículo
+
+Foi removido o veículo "BBB0002".
+
+Identificador: bbb0002
+
+Veiculo removido e vaga liberada.
+
+Na listagem realizada depois da remoção, o veículo não apareceu:
+
+ID        Categ. Vaga     Descricao
+CALAKS8   Carro  F1/C5    verde
+CALAKS7   Carro  F2/C2    azul
+AAA0001   Moto   F1/C1    verde
+AAA0006   Moto   F4/C4    preto
+
+Total: 4 veiculo(s).
+
+Resultado: o veículo removido deixou de aparecer na listagem.
+
+7.8. T09 — Limite Máximo de 20 Veículos
+
+Foram realizados cadastros até preencher todas as 20 vagas.
+Com o estacionamento lotado, foi tentado um novo cadastro:
+
+Identificador: FGH8654
+Descricao: branco
+Categoria: 2
+Fileira: 1
+Coluna: 3
+
+Cadastro cancelado. Estacionamento lotado:
+as 20 vagas estao ocupadas.
+
+O relatório apresentou:
+
+Total de vagas.....: 20
+Vagas ocupadas.....: 20
+Vagas livres.......: 0
+Percentual ocupacao: 100.00%
+Carros.............: 9
+Motos..............: 11
+
+Resultado: o sistema recusou o cadastro adicional e manteve o limite de 20 veículos.
+
+7.9. T10 — Encerramento do Programa
+
+Ao selecionar a opção "0", o programa apresentou:
+
+Encerrando. Memoria liberada.
+
+Resultado: o programa encerrou a execução e apresentou a mensagem de liberação da memória.
+
+
+### 8. Validações e Testes Complementares
+
+Além dos casos principais, foram verificadas situações de entrada inválida e consistência dos dados.
+
+Verificação| Exemplo utilizado| Resultado observado
+Identificador com espaço no final| "ABC1234 "| Entrada recusada por formato inválido
+Identificador duplicado| "bbb0002"| Cadastro recusado
+Identificador em letras minúsculas| "ccc0976"| Cadastrado como "CCC0976"
+Categoria não informada| Campo vazio| Cadastro cancelado por categoria inválida
+Fileira fora do limite| "0" ou "6"| Entrada recusada
+Coluna fora do limite| "6"| Entrada recusada
+Vaga ocupada| F1/C5| Operação recusada
+Opção inválida no menu| Texto em vez de número| Sistema informa opção inexistente
+Tentativa de cadastro com estacionamento lotado| 21º veículo| Cadastro recusado
+Listagem de veículos| Opção 6| Registros e posições apresentados
+Exibição do mapa| Opção 7| "X" para ocupada e "." para livre
+Relatório de ocupação| Opção 8| Quantidades e percentual apresentados
+
+### 8.1. Exemplo de Identificador Inválido
+
+Foi informado um identificador com espaço no final:
+
+Identificador: ABC1234 
+
+Cadastro cancelado. Identificador invalido:
+use exatamente 7 caracteres (A-Z e 0-9).
+
+Resultado: o sistema recusou o identificador fora do formato permitido.
+
+### 8.2. Exemplo de Categoria Inválida
+
+Foi deixado o campo de categoria vazio:
+
+Categoria (1 = carro, 2 = moto):
+
+Cadastro cancelado. Categoria invalida:
+use 1 (carro) ou 2 (moto).
+
+Resultado: o cadastro foi cancelado.
+
+### 8.3. Exemplo de Normalização do Identificador
+
+Foi informado o identificador em letras minúsculas:
+
+Identificador: ccc0976
+
+Veiculo CCC0976 cadastrado na vaga F2/C1.
+
+Resultado: o sistema converteu o identificador para letras maiúsculas.
+
+### 9. Conferência do Mapa e do Relatório
+
+O mapa apresenta as 20 vagas distribuídas em quatro fileiras e cinco colunas.
+
+Exemplo de mapa com todas as vagas ocupadas:
+
+   C1  C2  C3  C4  C5
+F1 X   X   X   X   X
+F2 X   X   X   X   X
+F3 X   X   X   X   X
+F4 X   X   X   X   X
+
+Legenda: X = ocupada; . = livre
+
+O relatório também foi conferido com cinco veículos cadastrados:
+
+Total de vagas.....: 20
+Vagas ocupadas.....: 5
+Vagas livres.......: 15
+Percentual ocupacao: 25.00%
+Carros.............: 3
+Motos..............: 2
+
+E com o estacionamento totalmente ocupado:
+
+Total de vagas.....: 20
+Vagas ocupadas.....: 20
+Vagas livres.......: 0
+Percentual ocupacao: 100.00%
+Carros.............: 9
+Motos..............: 11
+
+Esses resultados demonstram o funcionamento do cálculo de ocupação e da contagem por categoria nos cenários executados.
+
+### 10. Consistência dos Dados
+
+O sistema deve manter a correspondência entre os registros armazenados no vetor dinâmico e as posições ocupadas na matriz.
+
+A regra de consistência é:
+
+Quantidade de registros = Quantidade de vagas ocupadas
+
+Dessa forma:
+
+- Ao cadastrar um veículo, um registro é adicionado e uma vaga é marcada como ocupada.
+- Ao mover um veículo, a posição anterior é liberada e a nova posição é ocupada.
+- Ao remover um veículo, o registro é excluído e a vaga é liberada.
+- O relatório deve refletir a situação atual do estacionamento.
+
+## . Declaração Individual de Autoria e Uso de IA
 
 ### Declaração de Vitoria Sudre de Melo
-
-Declaro que participei do desenvolvimento do Sistema de Gestão de Estacionamento, atuando na estrutura de dados, no menu principal, no cadastro de veículos, nas validações e na matriz do mapa de vagas. Utilizamos o ChatGPT como ferramenta de inteligência artificial para obter uma base inicial e orientações para a estruturação do projeto. As sugestões foram analisadas, adaptadas e revisadas durante o desenvolvimento.
+Declaro que participei do desenvolvimento do Sistema  de Estacionamento, atuando na estrutura de dados, no menu principal, no cadastro de veículos, nas validações e na matriz do mapa de vagas. Utilizamos o ChatGPT como ferramenta de inteligência artificial para obter uma base inicial e orientações para a estruturação do projeto. As sugestões foram analisadas, adaptadas e revisadas durante o desenvolvimento.
 
 ### Declaração de Natasha Novaes dos Santos
 
-Declaro que participei do desenvolvimento do Sistema de Gestão de Estacionamento, atuando no vetor dinâmico, na realocação de memória com `realloc`, na movimentação, na remoção de veículos e nos relatórios de ocupação. Também utilizamos o ChatGPT como apoio para construir a base inicial do código, esclarecer dúvidas e auxiliar na organização das funcionalidades. O código foi revisado e estudado por nós durante a realização do trabalho.
-
----
-
+Declaro que participei do desenvolvimento do Sistema  de Estacionamento, atuando no vetor dinâmico, na realocação de memória com "realloc", na movimentação, na remoção de veículos e nos relatórios de ocupação. Também utilizamos o ChatGPT como apoio para construir a base inicial do código, esclarecer dúvidas e auxiliar na organização das funcionalidades. O código foi revisado e estudado por nós durante a realização do trabalho.
