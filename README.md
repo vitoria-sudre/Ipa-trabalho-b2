@@ -128,13 +128,13 @@ O projeto está organizado da seguinte forma:
 
 ```text
 lpa-trabalho-b2/
-── src/
-    ├── estacionamento.c
-    ├── estacionamento.h
-    └── main.c
+├── src/
+│   ├── estacionamento.c
+│   ├── estacionamento.h
+│   └── main.c
 ├── .gitignore
 ├── Licença
-├──  README.md
+└── README.md
 ```
 
 ### Responsabilidade dos arquivos
