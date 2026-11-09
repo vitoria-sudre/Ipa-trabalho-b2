@@ -180,7 +180,9 @@ gcc -std=c11 -Wall -Wextra -pedantic src/main.c src/estacionamento.c -o estacion
 
 Para compilar:
 
+```bash
 gcc -std=c11 -Wall -Wextra -pedantic src/main.c src/estacionamento.c -o programa.exe
+```
 
 Para executar:
 
