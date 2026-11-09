@@ -207,7 +207,7 @@ T08| Remover veículo cadastrado| Excluir o registro e liberar a vaga| BBB0002 f
 T09| Tentar cadastrar o 21º veículo| Recusar o cadastro quando as 20 vagas estiverem ocupadas| O sistema informou que o estacionamento estava lotado| Aprovado
 T10| Encerrar o programa| Finalizar a execução e liberar a memória alocada| O terminal apresentou a mensagem de encerramento e memória liberada| Aprovado na execução
 
-7.1. T02 — Cadastro de Veículos Válidos
+### 7.1. T02 — Cadastro de Veículos Válidos
 
 Foram cadastrados dois veículos com informações válidas.
 
@@ -242,7 +242,7 @@ Motos..............: 1
 
 Resultado: os dois veículos foram cadastrados e o relatório apresentou duas vagas ocupadas.
 
-7.2. T03 — Identificador Duplicado
+### 7.2. T03 — Identificador Duplicado
 
 Foi realizada uma tentativa de cadastrar novamente o identificador "bbb0002", que já havia sido cadastrado anteriormente como "BBB0002".
 
@@ -256,7 +256,7 @@ Cadastro cancelado. Ja existe um veiculo com esse identificador.
 
 Resultado: o sistema reconheceu o identificador duplicado, mesmo com letras minúsculas, e recusou o cadastro.
 
-7.3. T04 — Vaga Ocupada e Posição Inválida
+### 7.3. T04 — Vaga Ocupada e Posição Inválida
 
 Foi tentado cadastrar um veículo em uma vaga já ocupada.
 
@@ -277,7 +277,7 @@ fileira de 1 a 4 e coluna de 1 a 5.
 
 Resultado: as operações inválidas foram recusadas.
 
-7.4. T05 — Crescimento do Vetor Dinâmico
+### 7.4. T05 — Crescimento do Vetor Dinâmico
 
 O vetor começa com capacidade para 2 veículos.
 
@@ -308,7 +308,7 @@ A função utiliza um ponteiro temporário para receber o resultado de "realloc"
 
 Resultado: o terceiro cadastro foi realizado e os registros anteriores foram preservados. A lógica de expansão de 2 para 4 foi conferida no código-fonte. O relatório apresenta a ocupação física, não a capacidade interna do vetor.
 
-7.5. T06 — Atualização de Veículo
+### 7.5. T06 — Atualização de Veículo
 
 Foi atualizado o veículo "BBB0002", modificando sua descrição e categoria.
 
@@ -328,7 +328,7 @@ Posicao......: Fileira 2, Coluna 4
 
 Resultado: os dados foram atualizados corretamente.
 
-7.6. T07 — Movimentação de Veículo
+### 7.6. T07 — Movimentação de Veículo
 
 Foi realizada a movimentação do veículo "BBB0002" para a fileira 4, coluna 1.
 
@@ -340,7 +340,7 @@ Veiculo movido para a vaga F4/C1.
 
 Resultado: o sistema confirmou a movimentação para a nova posição.
 
-7.7. T08 — Remoção de Veículo
+### 7.7. T08 — Remoção de Veículo
 
 Foi removido o veículo "BBB0002".
 
@@ -360,7 +360,7 @@ Total: 4 veiculo(s).
 
 Resultado: o veículo removido deixou de aparecer na listagem.
 
-7.8. T09 — Limite Máximo de 20 Veículos
+### 7.8. T09 — Limite Máximo de 20 Veículos
 
 Foram realizados cadastros até preencher todas as 20 vagas.
 Com o estacionamento lotado, foi tentado um novo cadastro:
@@ -385,7 +385,7 @@ Motos..............: 11
 
 Resultado: o sistema recusou o cadastro adicional e manteve o limite de 20 veículos.
 
-7.9. T10 — Encerramento do Programa
+### 7.9. T10 — Encerramento do Programa
 
 Ao selecionar a opção "0", o programa apresentou:
 
