@@ -181,12 +181,12 @@ gcc -std=c11 -Wall -Wextra -pedantic src/main.c src/estacionamento.c -o estacion
 Para compilar:
 
 ```bash
-gcc -std=c11 -Wall -Wextra -pedantic src/main.c src/estacionamento.c -o programa.exe
+gcc -std=c11 -Wall -Wextra -pedantic src/main.c src/estacionamento.c -o estacionamento.exe
 ```
 
 Para executar:
 ```bash
-.\programa.exe
+.\estacionamento.exe
 ```
 
 ## 7. Casos de Teste Documentados
