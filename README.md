@@ -133,6 +133,7 @@ lpa-trabalho-b2/
 │   ├── estacionamento.h
 │   └── main.c
 ├── .gitignore
+├── compilar.bat
 ├── Licença
 └── README.md
 ```
@@ -163,35 +164,40 @@ lpa-trabalho-b2/
 
 ## 6. Instruções de Compilação e Execução
 
-Para compilar o programa, é necessário ter o compilador GCC instalado.
+É necessário ter o compilador GCC instalado e configurado no sistema.
 
-### 6.1. Compilação (GCC C11)
+### 6.1 Compilação e execução automática no Windows (recomendado)
+```bash
+compilar.bat
+```
+### 6.2. Compilação e execução manual no Windows (caso o automático não funcione)
 
 Execute o seguinte comando na pasta principal do projeto:
-
-```bash
-gcc -std=c11 -Wall -Wextra -pedantic src/main.c src/estacionamento.c -o estacionamento
-```
-
-### 6.2. Execução no Linux ou macOS
-
-```bash
-./estacionamento
-```
-
-### 6.3. Execução no Windows (PowerShell)
-
-Para compilar:
 
 ```bash
 gcc -std=c11 -Wall -Wextra -pedantic src/main.c src/estacionamento.c -o estacionamento.exe
 ```
 
-Para executar:
+### 2. Executar o programa:
 
-```powershell
+```bash
 .\estacionamento.exe
 ```
+
+### 6.3. Compilação e execução no Linux ou macOS
+
+Para compilar:
+
+```bash
+gcc -std=c11 -Wall -Wextra -pedantic src/main.c src/estacionamento.c -o estacionamento
+```
+
+Para executar:
+
+```bash
+./estacionamento
+```
+### Observação: o arquivo compilar.bat automatiza a compilação e execução no Windows. Nos sistemas Linux e macOS, os comandos devem ser executados manualmente. O GCC precisa estar instalado no computador.
 
 ---
 
