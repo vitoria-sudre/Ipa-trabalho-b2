@@ -139,13 +139,14 @@ lpa-trabalho-b2/
 ```
 
 ### Responsabilidade dos arquivos
--main.c: contém a função principal, o menu interativo e o controle da execução do programa.
--estacionamento.h: apresenta as estruturas, constantes e protótipos das funções.
--estacionamento.c: contém a implementação das funcionalidades do sistema.
--compilar.bat: automatiza a compilação e execução do programa no Windows, utilizando o compilador GCC.
--README.md: apresenta a documentação, as funcionalidades, as instruções de execução e os resultados dos testes.
--.gitignore: define os arquivos que não devem ser enviados ao repositório.
--Licença: contém as informações de licença do projeto.
+
+- **main.c:** contém a função principal, o menu interativo e o controle da execução do programa.
+- **estacionamento.h:** apresenta as estruturas, constantes e protótipos das funções.
+- **estacionamento.c:** contém a implementação das funcionalidades do sistema.
+- **compilar.bat:** automatiza a compilação e a execução do programa no Windows, utilizando o compilador GCC.
+- **README.md:** apresenta a documentação, as funcionalidades, as instruções de execução e os resultados dos testes.
+- **.gitignore:** define os arquivos que não devem ser enviados ao repositório.
+- **Licença:** contém as informações de licença do projeto.
 
 ### Principais funções
 
