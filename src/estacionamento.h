@@ -75,8 +75,7 @@ typedef enum {
     LEITURA_EOF       /* fim da entrada */
 } StatusLeitura;
 
-/* Le uma linha com fgets (nunca estoura o buffer), remove o '\n' e descarta
-   o excesso. */
+
 StatusLeitura ler_linha(const char *prompt, char *buf, size_t tam);
 
 /* Le um inteiro. Em qualquer status diferente de LEITURA_OK, *valor = 0
