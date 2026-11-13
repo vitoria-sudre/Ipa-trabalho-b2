@@ -1,0 +1,33 @@
+ABC1D23
+Carro azul
+1
+1
+1
+1
+XYZ9K87
+Moto preta
+2
+1
+2
+1
+LPA2026
+Carro branco
+1
+4
+5
+1
+abc1d23
+4
+ABC1D23
+1
+2
+4
+ABC1D23
+2
+3
+5
+XYZ9K87
+6
+7
+8
+0
