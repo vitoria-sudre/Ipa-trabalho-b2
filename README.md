@@ -169,7 +169,7 @@ lpa-trabalho-b2/
 
 ### 6.1 Compilação e execução automática no Windows (recomendado)
 ```bash
-compilar.bat
+ .\compilar.bat
 ```
 ### 6.2. Compilação e execução manual no Windows (caso o automático não funcione)
 
