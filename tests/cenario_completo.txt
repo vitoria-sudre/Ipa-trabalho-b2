@@ -1,3 +1,7 @@
+8
+7
+6
+1
 ABC1D23
 Carro azul
 1
@@ -17,6 +21,10 @@ Carro branco
 5
 1
 abc1d23
+Carro azul
+1
+3
+3
 4
 ABC1D23
 1
