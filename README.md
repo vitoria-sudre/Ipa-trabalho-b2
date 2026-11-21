@@ -532,19 +532,13 @@ O sistema mantém a correspondência entre os registros do vetor dinâmico e as 
 - A função `verificar_consistencia()` confere essa igualdade e se cada registro aponta para uma vaga ocupada exclusiva.
 
 ---
-
 ## 10. Distribuição das Responsabilidades e Integração das Branches
 
-**Distribuição:** Vitoria ficou com a estrutura de dados, o menu, o cadastro, as validações e a matriz do mapa; Natasha ficou com o vetor dinâmico e `realloc`, a movimentação, a remoção e o relatório de ocupação.
+**Forma de trabalho:** o código-fonte (`main.c`, `estacionamento.c` e `estacionamento.h`) foi escrito pelas duas integrantes juntas, em pareamento, em um mesmo computador, no Visual Studio Code, durante encontros presenciais na faculdade. Como o computador usado foi o da Natasha, os commits do código-fonte foram enviados ao GitHub pela conta dela. Por isso o histórico do repositório mostra a Natasha como autora desses arquivos, embora a escrita tenha sido conjunta.
 
-**Integração das branches:**
+**Distribuição das responsabilidades:** Vitoria ficou com a estrutura de dados, o menu, o cadastro, as validações e a matriz do mapa; Natasha ficou com o vetor dinâmico e `realloc`, a movimentação, a remoção e o relatório de ocupação. Além do código, Vitoria criou o repositório e o `.gitignore`, revisou o README e produziu a documentação dos testes (`teste/analises.md`); Natasha atualizou o README e preparou dados de teste.
 
-- Branch de Vitoria: `[PREENCHER: nome da branch]` — [PREENCHER: o que foi desenvolvido nela].
-- Branch de Natasha: `[PREENCHER: nome da branch]` — [PREENCHER: o que foi desenvolvido nela].
-- As branches foram integradas à `main` por `[PREENCHER: merge ou pull request]` antes da entrega.
-- [PREENCHER: informar se houve conflito de merge e como foi resolvido; se não houve, escrever "Não houve conflitos de merge".]
-
----
+**Integração:** as alterações foram feitas diretamente na branch `main`, sem branches separadas durante o desenvolvimento principal. Não houve conflitos de merge.
 
 ## 11. Limitações Conhecidas
 
