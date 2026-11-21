@@ -1,5 +1,5 @@
-#ifndef ESTACIONAMENTO_H
-#define ESTACIONAMENTO_H
+#ifndef ESTACIONAMENTO_h
+#define ESTACIONAMENTO_h
 
 #include <stddef.h>
 
@@ -124,7 +124,6 @@ int verificar_consistencia(const Colecao *c, int mapa[FILEIRAS][COLUNAS]);
 /* Todas as operacoes validam ANTES de alterar qualquer coisa; se retornarem
    algo diferente de RES_OK, o mapa e a colecao ficam exatamente como estavam. */
 
-/* operacoes.c */
 Resultado cadastrar_veiculo(Colecao *c, int mapa[FILEIRAS][COLUNAS],
                             const char *id_bruto, const char *descricao,
                             int categoria, int fileira, int coluna);
@@ -136,7 +135,6 @@ Resultado atualizar_veiculo(Colecao *c, const char *id_bruto,
 
 const char *mensagem_resultado(Resultado r);
 
-/* movimentacao.c */
 Resultado mover_veiculo(Colecao *c, int mapa[FILEIRAS][COLUNAS],
                         const char *id_bruto, int nova_fileira,
                         int nova_coluna);
