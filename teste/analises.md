@@ -2,7 +2,7 @@
 
 Foram realizados testes manuais no terminal para verificar o funcionamento das principais funcionalidades do sistema, incluindo cadastro, validação de dados, atualização, movimentação, remoção, relatório e gerenciamento de memória. Os casos detalhados, com as saídas do terminal, estão na seção 7 do `README.md`.
 
-### 1.  Estacionamento vazio
+## 1.Estacionamento vazio
 - Listagem vazia com mensagem específica.
 - Mapa com as 20 vagas livres.
 - Relatório com 0 vagas ocupadas e ocupação de 0,00%.
