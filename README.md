@@ -11,12 +11,12 @@
 ## 1. Integrantes e Identificação
 
 **Integrante 1:** Vitoria Sudre de Melo  
-**GitHub:** @vitoriasudre
+**GitHub:** @vitória-sudre
 
 **Responsabilidades:** Estrutura de dados, menu principal, cadastro de veículos, validações alfanuméricas e matriz do mapa de vagas.
 
 **Integrante 2:** Natasha Novaes dos Santos  
-**GitHub:** @natashanovaes
+**GitHub:**natashanovaes55-codificadora
 
 **Responsabilidades:** Vetor dinâmico, realocação de memória (`realloc`), movimentação, remoção de registros e relatório de ocupação.
 
