@@ -359,14 +359,7 @@ Cadastro cancelado. Posicao invalida: fileira de 1 a 4 e coluna de 1 a 5.
 
 ### 7.5. T05 — Crescimento do Vetor Dinâmico
 
-O vetor começa com capacidade 2. Com dois veículos cadastrados, o relatório mostra:
-
-```text
-Registros no vetor.: 2
-Capacidade do vetor: 2
-```
-
-Cadastro do terceiro veículo:
+O vetor começa com capacidade 2 (como mostra o relatório do T01). Foram cadastrados dois veículos (CALAKS7 e CALAKS8) e, em seguida, um terceiro:
 
 ```text
 Identificador: CALAKS9
