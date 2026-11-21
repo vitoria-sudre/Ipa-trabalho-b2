@@ -16,7 +16,7 @@
 **Responsabilidades:** Estrutura de dados, menu principal, cadastro de veículos, validações alfanuméricas e matriz do mapa de vagas.
 
 **Integrante 2:** Natasha Novaes dos Santos  
-**GitHub:**natashanovaes55-codificadora
+**GitHub:**natashanovaes55-coder
 
 **Responsabilidades:** Vetor dinâmico, realocação de memória (`realloc`), movimentação, remoção de registros e relatório de ocupação.
 
