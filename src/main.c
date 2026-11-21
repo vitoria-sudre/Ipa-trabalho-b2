@@ -207,6 +207,8 @@ int main(void)
         case 8:
             calcular_relatorio(&veiculos, mapa, &rel);
             exibir_relatorio(&rel);
+            printf("Registos no vetor:%d\n",veiculos.quntidade);
+            printf("Capacidade no vetor:%d\n",veiculos.capacidade);
             break;
         default:
             printf("Opcao inexistente. Tente novamente.\n");
