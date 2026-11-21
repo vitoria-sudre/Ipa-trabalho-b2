@@ -1,4 +1,4 @@
-## Testes do Sistema de Gestão de Estacionamento
+### Testes do Sistema de Gestão de Estacionamento
 
 Foram realizados testes manuais no terminal para verificar o funcionamento das principais funcionalidades do sistema, incluindo cadastro, validação de dados, atualização, movimentação, remoção, relatório e gerenciamento de memória. Os casos detalhados, com as saídas do terminal, estão na seção 7 do `README.md`.
 
