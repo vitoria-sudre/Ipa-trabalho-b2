@@ -192,6 +192,8 @@ Todas as operações validam **antes** de alterar a matriz ou o vetor; em qualqu
 ### 6.1. Windows — compilação e execução automática (recomendado)
 
 ```bash
+cd .\Ipa-trabalho-b2-main
+
 .\compilar.bat
 ```
 
